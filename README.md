@@ -12,7 +12,7 @@ Upload lecture PDFs, preview slides, and choose exactly which pages to include.
 
 Select individual slides or choose all pages before generating your notes.
 
-![Slide selection interface](screenshots/Screenshot%20from%202026-10-20%2011-56-19.png)
+![Slide selection interface](<screenshots/Screenshot from 2026-10-20 11-56-19.png>)
 
 ### ⚙️ Conversion Settings
 
