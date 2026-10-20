@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#10131c">
+  <meta name="description" content="Concentric Notes Converter: turn lecture PDFs into clean, printer-friendly notes. Free and open source.">
+  <title>Concentric Notes Converter</title>
+  <link rel="icon" type="image/svg+xml" href="/static/concentric-mark.svg">
+  <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+  <div class="app-shell">
+    <aside class="sidebar">
+      <a class="brand" href="/" aria-label="Concentric Notes Converter home">
+        <img src="/static/concentric-mark.svg" alt="" class="brand-mark">
+        <span><strong>Concentric</strong><small>NOTES CONVERTER</small></span>
+      </a>
+      <div class="side-label">WORKSPACE</div>
+      <button class="nav-item active tool-tab" data-tool="notes"><span class="nav-icon">▤</span> Process notes <span class="nav-count">01</span></button>
+      <button class="nav-item tool-tab" data-tool="merge"><span class="nav-icon">⊕</span> Merge lectures <span class="nav-count">02</span></button>
+      <div class="sidebar-bottom">
+        <div class="privacy-card"><span class="privacy-dot"></span><div><b>Your files, your workflow</b><p>Files are processed by this app instance.</p></div></div>
+        <div class="creator">Made by <strong>Avadhesh Pingoriya</strong><br><span>Free to use · Open source</span></div>
+      </div>
+    </aside>
+    <main class="main-area">
+      <header class="topbar">
+        <div class="mobile-brand"><img src="/static/concentric-mark.svg" alt=""><strong>Concentric</strong></div>
+        <div class="breadcrumbs">Workspace <span>/</span> <b id="crumb">Process notes</b></div>
+        <div class="top-actions"><span class="status-pill"><i></i> Ready to convert</span><span class="avatar">AP</span></div>
+      </header>
+
+      <section id="notesTool" class="tool-panel active">
+        <div class="page-heading">
+          <div><div class="overline"><span class="overline-mark"></span> PDF WORKSPACE</div><h1>Make notes <em>work smarter.</em></h1><p>Clean up lecture slides, save printer ink, and arrange pages exactly how you want.</p></div>
+          <div class="heading-art" aria-hidden="true"><div class="orbit orbit-a"></div><div class="orbit orbit-b"></div><div class="orbit orbit-c"></div><div class="orbit-core">C</div></div>
+        </div>
+        <form id="form">
+          <div class="section-title"><span class="section-number">01</span><div><h2>Upload your lecture PDF</h2><p>Choose a file to preview and select slides.</p></div></div>
+          <section class="panel upload-panel">
+            <label class="dropzone" id="dropzone">
+              <input id="pdf" type="file" name="pdf" accept="application/pdf" required>
+              <span class="upload-symbol">↑</span><strong>Drop your PDF here, or <u>browse files</u></strong>
+              <small id="fileInfo">PDF document · Up to 500 MB</small>
+            </label>
+          </section>
+
+          <div class="section-title"><span class="section-number">02</span><div><h2>Choose the slides</h2><p id="pageInfo">Your page previews will appear here after upload.</p></div><div class="section-actions"><button type="button" class="quiet-button" id="all">Select all</button><button type="button" class="quiet-button" id="none">Clear</button></div></div>
+          <input type="hidden" id="pages" name="pages">
+          <section class="panel preview-panel"><div id="thumbnails" class="thumbnails"><div class="preview-empty"><span>▧</span><b>Nothing to preview yet</b><small>Upload a PDF to see its pages here.</small></div></div></section>
+
+          <div class="section-title"><span class="section-number">03</span><div><h2>Conversion settings</h2><p>Set the output layout and image treatment.</p></div></div>
+          <div class="settings-grid">
+            <section class="panel setting-panel"><div class="setting-heading"><span class="setting-icon">▦</span><div><h3>Pages per sheet</h3><p>Fit slides onto one A4 page.</p></div></div>
+              <div class="choice-grid">
+                <label><input type="radio" name="slides_per_page" value="1"><span>1</span></label><label><input type="radio" name="slides_per_page" value="2"><span>2</span></label><label><input type="radio" name="slides_per_page" value="3" checked><span>3</span></label><label><input type="radio" name="slides_per_page" value="4"><span>4</span></label><label><input type="radio" name="slides_per_page" value="6"><span>6</span></label><label><input type="radio" name="slides_per_page" value="8"><span>8</span></label>
+              </div>
+              <div class="setting-foot">Recommended for study notes <span>✦ 3 per page</span></div>
+            </section>
+            <section class="panel setting-panel"><div class="setting-heading"><span class="setting-icon">✧</span><div><h3>Image processing</h3><p>Choose how your slides should look.</p></div></div>
+              <label class="smart-option"><input type="radio" name="mode" value="smart" checked><span class="smart-glyph">✦</span><span><b>Smart Ink Saver</b><small>Sharper outlines and cleaner backgrounds</small></span><span class="recommended">RECOMMENDED</span></label>
+              <div class="mode-list"><label><input type="radio" name="mode" value="invert_bw"> Invert + B&W</label><label><input type="radio" name="mode" value="gray"> Grayscale</label><label><input type="radio" name="mode" value="original"> Original</label></div>
+              <div class="slider-box"><div><label for="strength">Outline strength</label><b id="strengthValue">55</b></div><input type="range" id="strength" name="strength" min="0" max="100" value="55"><div class="slider-labels"><span>Soft</span><span>Bold</span></div></div>
+            </section>
+          </div>
+          <section class="panel orientation-panel"><div class="setting-heading"><span class="setting-icon">▱</span><div><h3>Page orientation</h3><p>Choose the paper direction.</p></div></div><div class="segmented"><label><input type="radio" name="orientation" value="portrait" checked><span>▯</span> Portrait</label><label><input type="radio" name="orientation" value="landscape"><span>▱</span> Landscape</label></div></section>
+          <div class="action-area"><button id="generate" class="primary-button" type="submit"><span class="button-spark">✦</span><span>Generate notes PDF</span><b>↗</b></button><p id="status" role="status" aria-live="polite">Your original PDF stays unchanged.</p></div>
+        </form>
+      </section>
+
+      <section id="mergeTool" class="tool-panel">
+        <div class="page-heading merge-heading"><div><div class="overline"><span class="overline-mark"></span> CHAPTER BUILDER</div><h1>One chapter.<br><em>All in order.</em></h1><p>Combine lecture PDFs into a single chapter file before cleaning up the notes.</p></div><div class="heading-art" aria-hidden="true"><div class="orbit orbit-a"></div><div class="orbit orbit-b"></div><div class="orbit orbit-c"></div><div class="orbit-core">+</div></div></div>
+        <div class="section-title"><span class="section-number">01</span><div><h2>Add lecture PDFs</h2><p>Select at least two PDF files.</p></div></div>
+        <section class="panel upload-panel"><label class="dropzone" for="mergeFiles"><input id="mergeFiles" type="file" accept="application/pdf" multiple><span class="upload-symbol">＋</span><strong>Add lecture PDFs <u>from your device</u></strong><small>Choose multiple files. You can reorder them below.</small></label></section>
+        <div class="section-title"><span class="section-number">02</span><div><h2>Arrange lecture order</h2><p id="mergeInfo">No PDFs added yet.</p></div><button type="button" class="quiet-button" id="clearMerge">Clear all</button></div>
+        <section class="panel merge-panel"><div id="mergeList" class="merge-list"><div class="preview-empty"><span>☷</span><b>Your chapter starts here</b><small>Added lecture PDFs will appear in this list.</small></div></div></section>
+        <div class="section-title"><span class="section-number">03</span><div><h2>Name your chapter</h2><p>Optional. This becomes the downloaded filename.</p></div></div>
+        <section class="panel name-panel"><label for="chapterName">Chapter name</label><input id="chapterName" class="chapter-input" type="text" placeholder="e.g. Nationalism in India - Full Chapter"></section>
+        <div class="action-area"><button id="mergeButton" class="primary-button" type="button"><span class="button-spark">✦</span><span>Merge into full chapter PDF</span><b>↗</b></button><p id="mergeStatus" role="status" aria-live="polite">Your files will be combined in the order shown above.</p></div>
+        <div class="workflow-note"><span>✦</span><div><b>Suggested workflow</b><p>Merge lectures first, then use Process notes to apply Smart Ink Saver and fit the slides onto A4 pages.</p></div></div>
+      </section>
+      <footer><span>© <span id="year"></span> Concentric Notes Converter</span><span>Designed with care by <b>Avadhesh Pingoriya</b></span><a href="https://github.com/" target="_blank" rel="noreferrer">Open-source project ↗</a></footer>
+    </main>
+  </div>
+  <script src="/static/app.js"></script>
+</body>
+</html>
