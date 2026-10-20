@@ -190,61 +190,25 @@ Concentric Notes Converter uses the following technologies:
 
 ## 📥 Installation
 
-### 🪟 Windows (Recommended for Most Users)
+### 🪟 Windows · Easy Installation
 
-You can run Concentric Notes Converter on Windows from its source code using Python and Command Prompt (CMD).
+**No Python installation or command-line setup required.**
 
-**Step 1: Install Python**
+1. Open the [Latest Release](https://github.com/avadhesh0003/concentric-notes-converter/releases/latest).
+2. Under **Assets**, download `ConcentricNotesConverter.exe`.
+3. Save the file somewhere convenient, such as your Downloads folder.
+4. Double-click the EXE to launch Concentric Notes Converter.
+5. Your default browser should open the local application automatically.
 
-Download Python from the official website:
+If Windows displays a Microsoft Defender SmartScreen warning, verify that you downloaded the file from the official project release. An unsigned application may trigger a warning. Only proceed if you trust the source.
 
-https://www.python.org/downloads/windows/
+**Troubleshooting**
+- **The browser does not open:** Try visiting `http://127.0.0.1:5000` manually while the application is running.
+- **The application fails to start:** Run the EXE from Command Prompt to inspect error messages, or report the issue in [GitHub Issues](https://github.com/avadhesh0003/concentric-notes-converter/issues).
+- **The application is already running:** Close the previous instance before launching it again if both instances would use the same port.
 
-During installation, follow the installer's instructions and ensure Python is available from Command Prompt.
+The Windows executable is distributed through GitHub Releases. You do not need to clone the repository or install Python for the packaged version.
 
-**Step 2: Download the project**
-
-Open Command Prompt and run:
-
-```bat
-git clone https://github.com/avadhesh0003/concentric-notes-converter.git
-cd concentric-notes-converter
-```
-
-If Git is not installed, download the repository as a ZIP file from GitHub and extract it. Open CMD in the extracted project folder instead.
-
-**Step 3: Create a virtual environment**
-
-```bat
-py -m venv .venv
-```
-
-**Step 4: Activate the environment**
-
-```bat
-.venv\Scripts\activate
-```
-
-**Step 5: Install the dependencies**
-
-```bat
-python -m pip install --upgrade pip
-pip install -r requirements.txt
-```
-
-**Step 6: Start the application**
-
-```bat
-python app.py
-```
-
-Open the local address shown in the terminal. If the application uses the default Flask address, visit:
-
-`http://127.0.0.1:5000`
-
-Keep the terminal open while using the application.
-
-**Note:** Windows source installation has not yet been verified by the project maintainer. Package installation or platform-specific issues may need troubleshooting. A standalone Windows `.exe` installer is not currently documented as available.
 
 ### 🐧 Linux
 
