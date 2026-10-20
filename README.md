@@ -1,197 +1,246 @@
-# Concentric Notes Converter
+# 🟣 Concentric Notes Converter
 
-**Turn lecture slides into printer-friendly notes. Save ink, save paper, and keep studying.**
+### Smarter notes. Less unnecessary ink. More affordable studying.
 
-Concentric Notes Converter is a PDF utility designed for students who want to transform colourful lecture slides into more convenient study material. Process individual slides, reduce unnecessary ink usage, arrange multiple slides on a single page, and merge lecture PDFs into one organised document.
+**Concentric Notes Converter** is a PDF processing tool designed for students who want to turn lecture slides into printer-friendly study notes.
 
-It is built with Python and a browser-based interface, so you can use its workspace locally without needing a complicated desktop application.
+Convert colourful slides into black-and-white output, experiment with ink-saving processing, choose which slides to print, fit multiple slides on a single sheet, and merge lecture PDFs into organised study material.
+
+Built with Python and a browser-based interface, Concentric Notes Converter aims to make everyday study preparation practical, lightweight, and accessible, even on older computers.
+
+<p align="center">
+  <a href="https://github.com/avadhesh0003/concentric-notes-converter">
+    <img src="https://img.shields.io/badge/Platform-Linux%20tested-6C5CE7?style=for-the-badge" alt="Linux tested">
+  </a>
+  <img src="https://img.shields.io/badge/Interface-Browser--based-00A896?style=for-the-badge" alt="Browser-based interface">
+  <img src="https://img.shields.io/badge/License-See%20LICENSE-64748B?style=for-the-badge" alt="License">
+</p>
 
 ---
 
-## Screenshots
+## ✨ Why Concentric Notes Converter?
 
-### Notes Workspace
+Lecture PDFs are often designed for presentation screens, not printing. Large coloured backgrounds, decorative graphics, and full-page designs can make printed notes expensive or inconvenient.
+
+Concentric Notes Converter gives you more control over how your lecture material looks on paper.
+
+- 🖨️ **Printer-friendly output:** Convert slides into black-and-white or grayscale versions.
+- 🖋️ **Smart Ink Saver:** Reduce unnecessary background coverage in suitable slides.
+- 📄 **Save paper:** Arrange up to eight slides on a single sheet.
+- 🎯 **Print what matters:** Select individual slides instead of processing everything.
+- 📚 **Organise lectures:** Merge multiple PDFs into one document.
+- 🥔 **Designed for modest hardware:** No dedicated graphics card is required for ordinary PDF processing.
+
+---
+
+## 🖼️ See the Difference
+
+### Before and After
+
+The following example shows an original coloured lecture slide and its processed black-and-white version.
+
+<table>
+  <tr>
+    <th align="center">Before · Original Slide</th>
+    <th align="center">After · Processed Slide</th>
+  </tr>
+  <tr>
+    <td width="50%">
+      <img src="screenshots/before.png" alt="Original coloured lecture slide" width="100%">
+    </td>
+    <td width="50%">
+      <img src="screenshots/after.png" alt="Processed black-and-white lecture slide" width="100%">
+    </td>
+  </tr>
+</table>
+
+The aim is to make lecture slides more convenient to print while keeping their educational content readable. Results depend on the original slide and the selected processing mode.
+
+### Application Workspace
 
 ![Concentric Notes Converter workspace](screenshots/workspace.png)
 
-### Before and After: Ink-Saving Conversion
-
-Convert colourful lecture slides into black-and-white pages that are easier to print economically.
-
-**Before: Original coloured slide**
-
-![Original lecture slide](screenshots/before.png)
-
-**After: Processed black-and-white slide**
-
-![Processed lecture slide](screenshots/after.png)
-
-### Slide Selection
+### Select the Slides You Need
 
 ![Slide selection interface](screenshots/slide-selection.png)
 
-### Conversion Settings
+### Customise Your Output
 
 ![Conversion settings](<screenshots/Screenshot from 2026-10-20 11-56-36.png>)
 
-### Merge Lectures
+### Merge Lecture PDFs
 
 ![Merge lectures interface](screenshots/merge-lectures.png)
 
 ---
 
-## Features
+## 🚀 Features
 
-### 1. Smart Ink Saver
+### 🖋️ Smart Ink Saver
 
-Lecture slides often contain large coloured backgrounds, decorative elements, and dark areas that consume unnecessary printer ink.
+Presentation slides can contain large areas of dark or saturated backgrounds that are unnecessary for many printed study notes.
 
-Smart Ink Saver is designed to produce more printer-friendly output from such slides. It helps reduce unnecessary background coverage while preserving useful slide content as much as possible.
+Smart Ink Saver is designed to make suitable slides more printer-friendly by reducing unnecessary background coverage while retaining useful content.
 
-- Designed for colourful lecture presentations.
-- Helps make slides more suitable for printing.
-- Useful for students who prefer physical notes.
-- Results can vary depending on the original slide's colours, contrast, and layout.
+- Intended for lecture slides and educational PDFs.
+- Can help reduce large background areas in suitable images.
+- Useful when preparing notes for physical revision.
+- Results vary with slide design, colours, contrast, and content.
 
-**Note:** Smart Ink Saver is an image-processing feature, not a guarantee of a particular percentage of ink savings. Check the generated PDF before printing.
+**Important:** Ink savings depend on the printer, print settings, paper, and source document. No fixed percentage of savings is guaranteed.
 
-### 2. Multiple Image-Processing Modes
+### 🎨 Multiple Processing Modes
 
-Choose the output style that suits your lecture material:
+Choose how your slides should be processed.
 
-- **Smart Ink Saver:** Reduces unnecessary background coverage.
-- **Invert + B&W:** Inverts image tones and produces black-and-white output, useful for experimenting with dark-background slides.
-- **Grayscale:** Converts slides to shades of grey.
-- **Original:** Preserves the original image appearance as much as the conversion pipeline allows.
-
-### 3. Select Individual Slides
-
-You don't always need to print an entire lecture.
-
-- Preview the slides in a PDF.
-- Select the slides you need.
-- Select all slides or clear the selection.
-- Generate notes using your chosen settings.
-
-### 4. Multiple Slides Per Page
-
-Arrange multiple lecture slides on a single sheet to reduce paper usage.
-
-Available layouts:
-
-- 1 slide per page
-- 2 slides per page
-- 3 slides per page
-- 4 slides per page
-- 6 slides per page
-- 8 slides per page
-
-Choose portrait or landscape orientation according to your preferred layout.
-
-### 5. Outline Strength
-
-Adjust the outline-strength setting to control the outline effect where supported by the processing pipeline. This can be useful when preparing slides with light text or illustrations for printing.
-
-### 6. Merge Lecture PDFs
-
-Combine multiple lecture PDFs into one chapter document.
-
-- Upload multiple PDFs.
-- Arrange the files in your preferred order.
-- Merge them into a single PDF.
-- Keep related lectures together for easier revision.
-
-### 7. Local Browser-Based Interface
-
-The application runs locally and opens in your web browser.
-
-- No separate desktop GUI framework is required.
-- The browser provides the user interface.
-- PDF processing is handled by the Python application.
-- Internet access is not required for ordinary local processing once the application and its dependencies are installed, provided no external service is added to your setup.
-
----
-
-## System Requirements
-
-Concentric Notes Converter is intended to be usable on modest computers, including older laptops. PDF processing performance depends on the size, resolution, and number of pages being processed.
-
-The following specifications are **initial estimates, not independently benchmarked guarantees**.
-
-| Component | Proposed minimum | Recommended |
-|---|---|---|
-| Processor | 64-bit, dual-core CPU | Modern dual-core or better |
-| RAM | 2 GB for light workloads | 4 GB or more |
-| Storage | 500 MB free for the application and dependencies, plus working space | 1 GB or more free, plus PDF storage |
-| Architecture | 64-bit x86 processor | 64-bit x86 processor |
-| Display | Any display capable of running a supported browser | 1366 × 768 or higher |
-| Browser | Recent Chromium, Chrome, Firefox, or another compatible browser | Updated browser |
-| Internet | Needed for initial setup and dependency downloads | Not normally needed for local processing after setup |
-
-### Can it run on a potato PC? 🥔
-
-**Quite possibly, yes!**
-
-You don't need a gaming laptop or a powerful graphics card. The main work is PDF and image processing, so a dedicated GPU is not required.
-
-- An older dual-core processor can be sufficient for small PDFs.
-- 2 GB RAM may work for light tasks, but larger PDFs can struggle.
-- 4 GB RAM is a more practical starting point.
-- 8 GB RAM provides more headroom for large files and multitasking.
-- Large, high-resolution PDFs may take longer and require more memory.
-
-These are estimates. Actual performance must be tested on the target computer.
-
----
-
-## Technology Stack
-
-| Technology | Purpose |
+| Mode | Purpose |
 |---|---|
-| Python | Application logic |
-| Flask | Local web server and application routes |
-| PyMuPDF | PDF reading and manipulation |
-| Pillow | Image processing |
-| OpenCV | Image-processing operations |
-| NumPy | Numerical image operations |
-| HTML, CSS and JavaScript | User interface and browser interactions |
-| Gunicorn | WSGI server support |
+| **Smart Ink Saver** | Makes suitable slides more printer-friendly by reducing unnecessary background coverage. |
+| **Invert + B&W** | Inverts image tones and creates black-and-white output, useful for experimenting with dark-background slides. |
+| **Grayscale** | Converts slide images into shades of grey. |
+| **Original** | Keeps the original image appearance as much as the processing pipeline allows. |
+
+### 🎯 Individual Slide Selection
+
+Take control of your notes instead of printing an entire lecture.
+
+- Preview PDF slides before processing.
+- Select individual slides.
+- Select all slides at once.
+- Clear your current selection.
+- Generate output from the slides you actually need.
+
+### 📄 Multiple Slides Per Sheet
+
+Fit more lecture content onto fewer printed pages.
+
+Supported layouts:
+
+`1 · 2 · 3 · 4 · 6 · 8 slides per page`
+
+Choose portrait or landscape orientation to suit your content and preferred printing layout.
+
+### ✏️ Adjustable Outline Strength
+
+Use the outline-strength control to adjust the outline effect where supported by the processing pipeline. This can help you experiment with the appearance of processed slides before generating the final PDF.
+
+### 📚 Merge Lectures
+
+Keep related study material together.
+
+- Upload multiple lecture PDFs.
+- Arrange them in your preferred order.
+- Combine them into a single PDF.
+- Prepare one organised document for a chapter or topic.
+
+### 🌐 Browser-Based Workspace
+
+The interface runs in a web browser while the Python application handles processing.
+
+- No dedicated GPU is needed for normal PDF tasks.
+- Works locally on a supported Python environment.
+- Uses common Python PDF and image-processing libraries.
+- Can process files offline after setup, provided all required dependencies are already installed and the application does not rely on external services.
 
 ---
 
-## Installation
+## 💻 System Requirements
 
-### Linux
+Concentric Notes Converter is intended to be practical on low-end computers. The figures below are **initial targets**, not results from comprehensive hardware benchmarking.
 
-The project has been tested locally on **Zorin OS 18.1, 64-bit**.
+| Component | Recommended minimum | Tested development laptop |
+|---|---|---|
+| **Processor** | 64-bit dual-core CPU | Intel Core i3-6006U |
+| **Memory** | 2 GB RAM for light workloads | 8 GB RAM |
+| **Architecture** | 64-bit x86 | 64-bit x86 |
+| **Graphics** | Integrated graphics; no dedicated GPU required | Intel HD Graphics 520 |
+| **Storage** | 500 MB free for application and dependencies, plus temporary working space | 128 GB SSD and 1 TB HDD |
+| **Operating system** | A compatible 64-bit Linux environment with Python support | Zorin OS 18.1 Core |
+| **Browser** | A recent compatible browser | Brave on Linux |
 
-For a development/source installation, install Python 3 and `pip`, then clone the repository:
+### 🥔 What about an old or low-end PC?
+
+You do not need a gaming computer to process ordinary lecture PDFs.
+
+- **2 GB RAM:** A reasonable target for light workloads, but larger PDFs may struggle.
+- **4 GB RAM:** A more comfortable starting point for everyday use.
+- **8 GB RAM:** Provides additional headroom for large documents and multitasking.
+- **Dedicated graphics card:** Not required for the application's normal PDF and image-processing workflow.
+
+The actual minimum depends on PDF size, page resolution, the processing mode, and available memory. Large files may need significantly more RAM and temporary storage.
+
+**The tested configuration above is the laptop used during development.** It is not a claim that every operating system or every feature has been tested on all listed hardware configurations.
+
+---
+
+## 🛠️ Technology
+
+Concentric Notes Converter uses the following technologies:
+
+- **Python** for application logic.
+- **Flask** for web routing and the local application server.
+- **PyMuPDF** for PDF operations.
+- **Pillow** for image manipulation.
+- **OpenCV** for image processing.
+- **NumPy** for numerical image operations.
+- **HTML, CSS and JavaScript** for the browser interface.
+- **Gunicorn** for WSGI server support.
+
+---
+
+## 📥 Installation
+
+### Linux · Source Installation
+
+The application has been tested locally on Zorin OS 18.1 Core.
+
+#### 1. Install prerequisites
+
+Install Python 3, `pip`, and the virtual-environment package using your distribution's package manager.
+
+On Debian-based systems:
+
+```bash
+sudo apt update
+sudo apt install python3 python3-pip python3-venv git
+```
+
+#### 2. Download the project
 
 ```bash
 git clone https://github.com/avadhesh0003/concentric-notes-converter.git
 cd concentric-notes-converter
 ```
 
-Create a virtual environment and install the dependencies:
+#### 3. Create a virtual environment
 
 ```bash
 python3 -m venv .venv
 source .venv/bin/activate
+```
+
+#### 4. Install dependencies
+
+```bash
 python -m pip install --upgrade pip
 pip install -r requirements.txt
 ```
 
-Start the application:
+#### 5. Start the application
 
 ```bash
 python app.py
 ```
 
-Open the local address shown in the terminal. If the application uses Flask's default local address, it will typically be:
+Open the local address printed by the application. If it uses Flask's default local address, visit:
 
 `http://127.0.0.1:5000`
 
-If you installed the Linux launcher, you can also start it using:
+Keep the terminal running while you use the application.
+
+#### Existing Linux launcher
+
+If you have installed the standalone Linux launcher using the project's setup instructions, you can start it with:
 
 ```bash
 ~/.local/bin/concentric-notes-converter
@@ -199,116 +248,100 @@ If you installed the Linux launcher, you can also start it using:
 
 ### Windows
 
-The source code is Python-based, but a Windows installer has not yet been verified. A compatible Python installation and the project's dependencies will be required.
+The project is written in Python, but a Windows installer and native Windows packaging have not yet been verified. Running from source would require a compatible Python environment and the project's dependencies.
 
 ### macOS
 
-The source code may be adaptable to macOS, but macOS compatibility has not yet been verified.
+macOS support has not yet been verified. Compatibility should be tested before being advertised as supported.
 
 ---
 
-## How to Use
+## 📖 How to Use
 
 ### Process Notes
 
-1. Open the application.
-2. Upload your lecture PDF.
-3. Preview the slides and select the pages you want.
-4. Choose the number of slides per sheet.
-5. Select portrait or landscape orientation.
-6. Choose Smart Ink Saver, Invert + B&W, Grayscale, or Original.
-7. Adjust outline strength if required.
-8. Generate and review the resulting notes PDF.
-9. Print the PDF using your preferred printer settings.
+1. Open the Notes workspace.
+2. Upload a lecture PDF.
+3. Preview the slides.
+4. Select the pages you need.
+5. Choose the number of slides per sheet.
+6. Select portrait or landscape orientation.
+7. Choose the image-processing mode.
+8. Adjust outline strength if needed.
+9. Generate the notes PDF.
+10. Review the result before printing.
 
 ### Merge Lectures
 
-1. Open the Merge Lectures workspace.
-2. Upload the lecture PDFs.
-3. Arrange them in the desired order.
-4. Start the merge operation.
+1. Open Merge Lectures.
+2. Upload the PDFs you want to combine.
+3. Arrange the files in the required order.
+4. Start the merge.
 5. Save the combined PDF for revision.
 
 ---
 
-## Project Structure
+## 🔒 Privacy and File Handling
 
-```text
-concentric-notes-converter/
-├── app.py
-├── requirements.txt
-├── runtime.txt
-├── Procfile
-├── LICENSE
-├── README.md
-├── templates/
-├── static/
-└── screenshots/
-    ├── README.md
-    ├── workspace.png
-    ├── before.png
-    ├── after.png
-    ├── slide-selection.png
-    ├── merge-lectures.png
-    └── Screenshot from 2026-10-20 11-56-36.png
-```
-
----
-
-## Privacy and File Handling
-
-Concentric Notes Converter is designed around local PDF processing.
-
-When running the application locally, uploaded PDFs are handled by your own running application rather than automatically being sent to a third-party conversion service.
+When running locally, PDF processing takes place through your local application rather than automatically requiring a third-party conversion service.
 
 Keep in mind:
 
-- Temporary files may be created during processing.
-- Do not assume temporary files are automatically deleted unless the implementation confirms it.
-- Be cautious when using any publicly exposed or remotely hosted deployment.
-- Do not upload confidential documents to an untrusted deployment.
+- Processing may create temporary files.
+- Temporary-file cleanup depends on the implementation.
+- A remotely hosted deployment has different privacy considerations from a local installation.
+- Avoid uploading confidential documents to an untrusted server.
 
 ---
 
-## Roadmap
+## 🗺️ Roadmap
 
-Possible future improvements include:
+Potential improvements include:
 
-- [ ] Windows desktop installer
-- [ ] Linux packaging improvements
-- [ ] More ink-saving controls
-- [ ] Additional page-layout options
-- [ ] Improved batch processing
-- [ ] Better handling of large PDFs
-- [ ] More output previews and processing controls
-
----
-
-## Contributing
-
-Contributions, bug reports, and suggestions are welcome.
-
-If you find an issue:
-
-1. Check whether it has already been reported.
-2. Describe the steps needed to reproduce it.
-3. Include your operating system and Python version.
-4. Share a small sample PDF only if you have permission to share its contents.
+- [ ] More ink-saving controls.
+- [ ] Additional page-layout options.
+- [ ] Better handling of large PDFs.
+- [ ] Improved batch processing.
+- [ ] More output previews.
+- [ ] Improved Linux packaging.
+- [ ] Windows desktop packaging.
+- [ ] Broader operating-system compatibility testing.
 
 ---
 
-## License
+## 🤝 Contributing
 
-See the [LICENSE](LICENSE) file for the terms governing the use, modification, and distribution of this project.
+Bug reports, suggestions, and contributions are welcome.
+
+When reporting an issue, please include:
+
+- Your operating system.
+- Your Python version.
+- The steps needed to reproduce the issue.
+- The approximate PDF size and page count.
+- Any relevant error messages.
+
+Do not share copyrighted or private lecture PDFs unless you have permission.
 
 ---
 
-## Author
+## 📜 License
+
+Please see the [LICENSE](LICENSE) file for the project's licensing terms.
+
+---
+
+## 👨‍💻 Author
 
 **Avadhesh Pingoriya**
 
-GitHub: [@avadhesh0003](https://github.com/avadhesh0003)
+- GitHub: [@avadhesh0003](https://github.com/avadhesh0003)
+- Repository: [Concentric Notes Converter](https://github.com/avadhesh0003/concentric-notes-converter)
 
-Project repository: [concentric-notes-converter](https://github.com/avadhesh0003/concentric-notes-converter)
+---
 
-*Made for students who want more useful notes and less unnecessary printing.*
+<p align="center">
+  <strong>Made for students. Designed for practical, printer-friendly notes.</strong>
+  <br>
+  Less unnecessary ink. Fewer printed sheets. More focused revision.
+</p>
