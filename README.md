@@ -190,69 +190,104 @@ Concentric Notes Converter uses the following technologies:
 
 ## 📥 Installation
 
-### Linux · Source Installation
+### 🪟 Windows (Recommended for Most Users)
+
+You can run Concentric Notes Converter on Windows from its source code using Python and Command Prompt (CMD).
+
+**Step 1: Install Python**
+
+Download Python from the official website:
+
+https://www.python.org/downloads/windows/
+
+During installation, follow the installer's instructions and ensure Python is available from Command Prompt.
+
+**Step 2: Download the project**
+
+Open Command Prompt and run:
+
+```bat
+git clone https://github.com/avadhesh0003/concentric-notes-converter.git
+cd concentric-notes-converter
+```
+
+If Git is not installed, download the repository as a ZIP file from GitHub and extract it. Open CMD in the extracted project folder instead.
+
+**Step 3: Create a virtual environment**
+
+```bat
+py -m venv .venv
+```
+
+**Step 4: Activate the environment**
+
+```bat
+.venv\Scripts\activate
+```
+
+**Step 5: Install the dependencies**
+
+```bat
+python -m pip install --upgrade pip
+pip install -r requirements.txt
+```
+
+**Step 6: Start the application**
+
+```bat
+python app.py
+```
+
+Open the local address shown in the terminal. If the application uses the default Flask address, visit:
+
+`http://127.0.0.1:5000`
+
+Keep the terminal open while using the application.
+
+**Note:** Windows source installation has not yet been verified by the project maintainer. Package installation or platform-specific issues may need troubleshooting. A standalone Windows `.exe` installer is not currently documented as available.
+
+### 🐧 Linux
 
 The application has been tested locally on Zorin OS 18.1 Core.
 
-#### 1. Install prerequisites
-
-Install Python 3, `pip`, and the virtual-environment package using your distribution's package manager.
-
-On Debian-based systems:
+Install the prerequisites on a Debian-based distribution:
 
 ```bash
 sudo apt update
 sudo apt install python3 python3-pip python3-venv git
 ```
 
-#### 2. Download the project
+Clone the project and enter its directory:
 
 ```bash
 git clone https://github.com/avadhesh0003/concentric-notes-converter.git
 cd concentric-notes-converter
 ```
 
-#### 3. Create a virtual environment
+Create and activate a virtual environment:
 
 ```bash
 python3 -m venv .venv
 source .venv/bin/activate
 ```
 
-#### 4. Install dependencies
+Install dependencies and run the application:
 
 ```bash
 python -m pip install --upgrade pip
 pip install -r requirements.txt
-```
-
-#### 5. Start the application
-
-```bash
 python app.py
 ```
 
-Open the local address printed by the application. If it uses Flask's default local address, visit:
-
-`http://127.0.0.1:5000`
-
-Keep the terminal running while you use the application.
-
-#### Existing Linux launcher
-
-If you have installed the standalone Linux launcher using the project's setup instructions, you can start it with:
+Alternatively, if you have installed the project's Linux launcher:
 
 ```bash
 ~/.local/bin/concentric-notes-converter
 ```
 
-### Windows
+### 🍎 macOS
 
-The project is written in Python, but a Windows installer and native Windows packaging have not yet been verified. Running from source would require a compatible Python environment and the project's dependencies.
-
-### macOS
-
-macOS support has not yet been verified. Compatibility should be tested before being advertised as supported.
+macOS compatibility has not yet been verified. Installation instructions will be added after testing the application on macOS.
 
 ---
 
