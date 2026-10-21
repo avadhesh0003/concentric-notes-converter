@@ -190,6 +190,56 @@ Concentric Notes Converter uses the following technologies:
 
 ## 📥 Installation
 
+## 📱 Android Installation (Beta)
+
+Concentric Notes Converter is now available for Android as an early beta! This version lets you convert colourful PDF pages into black-and-white notes directly on your Android device.
+
+### 📥 Download
+
+1. Open the [Releases page](https://github.com/avadhesh0003/concentric-notes-converter/releases).
+2. Find **Concentric Notes Converter Android v0.1.0-beta**.
+3. Download the APK file attached to that release.
+
+### ⚙️ Installation
+
+1. Download the APK to your Android phone.
+2. Open the downloaded APK using your file manager.
+3. If Android asks for permission to install apps from that source, allow it for your browser or file manager.
+4. Review the installation prompt and tap **Install**.
+5. Open Concentric Notes Converter after installation.
+
+**Security notice:** Android or your device's security software may display a warning because this beta APK is distributed directly rather than through Google Play. This warning does not automatically mean the app is malicious. However, always download the APK from this repository's official Releases page and review the source code if you want to verify how the app works. Only proceed if you trust the source.
+
+### 📋 Requirements
+
+- Android 7.0 (Nougat) or newer.
+- Storage space for the app and the PDFs you process.
+
+### ✨ Available features
+
+- Convert colourful PDF pages into black-and-white notes.
+- Process PDFs locally on your device.
+
+### ⚠️ Current limitations
+
+This is an early beta, and some features available in the desktop version are not yet implemented on Android.
+
+- **Multiple slides per page:** Not available yet.
+- **Layout selection:** Not available yet.
+- **App logo and icon:** Still being developed.
+- **Additional processing modes:** Not available yet.
+
+### 🚧 What's planned
+
+- Support for 2, 3, 4, 6 and 8 slides per page.
+- Layout and page orientation controls.
+- Custom app icon and improved branding.
+- More PDF processing options.
+
+Please report bugs or share suggestions through the repository's [Issues page](https://github.com/avadhesh0003/concentric-notes-converter/issues).
+
+Thank you for trying the beta! 💜
+
 ### 🪟 Windows · Easy Installation
 
 **No Python installation or command-line setup required.**
