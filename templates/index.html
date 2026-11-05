@@ -1,0 +1,3551 @@
+<!doctype html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#242424">
+  <meta name="author" content="Avadhesh Pingoriya">
+  <meta name="description" content="Concentric Notes Converter V2.3: Clean modern step-by-step student PDF & Smart Ink Saver suite by Avadhesh Pingoriya.">
+  <title>Concentric Notes Converter — Smart Study PDF Suite</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js" defer></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf-lib/1.17.1/pdf-lib.min.js" defer></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js" defer></script>
+  <style>
+/* Concentric Notes Converter V2.3 — Clean Modern Grey UI
+   Created by Avadhesh Pingoriya */
+
+:root,
+[data-theme="dark"] {
+  --ui-window-bg: #242424;
+  --ui-view-bg: #1e1e1e;
+  --ui-headerbar-bg: #303030;
+  --ui-sidebar-bg: #2c2c2c;
+  --ui-card-bg: #353535;
+  --ui-card-hover: #3d3d3d;
+  --ui-row-bg: #323232;
+  --ui-input-bg: #262626;
+  --ui-border: rgba(255, 255, 255, 0.08);
+  --ui-border-strong: rgba(255, 255, 255, 0.15);
+  --ui-fg: #f6f5f4;
+  --ui-fg-dim: #b0afac;
+  --ui-fg-muted: #86858a;
+  --ui-accent: #3584e4;
+  --ui-accent-hover: #4a92e8;
+  --ui-accent-soft: rgba(53, 132, 228, 0.16);
+  --ui-success: #2ec27e;
+  --ui-warning: #f59e0b;
+  --ui-danger: #e01b24;
+  --ui-radius: 12px;
+  --ui-radius-sm: 8px;
+  --ui-shadow: 0 2px 8px rgba(0, 0, 0, 0.22);
+}
+
+[data-theme="light"] {
+  --ui-window-bg: #f6f5f4;
+  --ui-view-bg: #efeeed;
+  --ui-headerbar-bg: #ebebea;
+  --ui-sidebar-bg: #f0efee;
+  --ui-card-bg: #ffffff;
+  --ui-card-hover: #f8f8f7;
+  --ui-row-bg: #ffffff;
+  --ui-input-bg: #f2f1f0;
+  --ui-border: rgba(0, 0, 0, 0.09);
+  --ui-border-strong: rgba(0, 0, 0, 0.16);
+  --ui-fg: #241f31;
+  --ui-fg-dim: #5e5c64;
+  --ui-fg-muted: #77767b;
+  --ui-accent: #1c71d8;
+  --ui-accent-hover: #1a65c2;
+  --ui-accent-soft: rgba(28, 113, 216, 0.12);
+  --ui-success: #26a269;
+  --ui-warning: #d97706;
+  --ui-danger: #c01c28;
+  --ui-shadow: 0 1px 5px rgba(0, 0, 0, 0.06);
+}
+
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html, body {
+  height: 100%;
+  background-color: var(--ui-window-bg);
+  color: var(--ui-fg);
+  font-family: "Inter", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  font-size: 14.5px;
+  line-height: 1.45;
+  -webkit-font-smoothing: antialiased;
+  overflow: hidden;
+}
+
+input[type="file"] {
+  display: none !important;
+}
+
+a {
+  color: var(--ui-accent);
+  text-decoration: none;
+}
+a:hover {
+  text-decoration: underline;
+}
+
+svg.ico {
+  width: 17px;
+  height: 17px;
+  stroke: currentColor;
+  stroke-width: 1.9;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  fill: none;
+  flex-shrink: 0;
+}
+
+/* ==================== APP SPLIT LAYOUT ==================== */
+.adw-window {
+  display: grid;
+  grid-template-columns: 268px minmax(0, 1fr);
+  height: 100vh;
+  width: 100vw;
+  overflow: hidden;
+}
+
+/* ==================== SIDEBAR ==================== */
+.adw-sidebar {
+  background: var(--ui-sidebar-bg);
+  border-right: 1px solid var(--ui-border);
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+}
+
+.sidebar-header {
+  height: 54px;
+  min-height: 54px;
+  padding: 0 14px;
+  background: var(--ui-headerbar-bg);
+  border-bottom: 1px solid var(--ui-border);
+  display: flex;
+  align-items: center;
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: var(--ui-fg) !important;
+  text-decoration: none !important;
+  cursor: pointer;
+}
+.brand-mark {
+  width: 30px;
+  height: 30px;
+  border-radius: 8px;
+  background: var(--ui-card-bg);
+  border: 1px solid var(--ui-border-strong);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+.brand-text {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.2;
+}
+.brand-text strong {
+  font-size: 13.8px;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+}
+.brand-text small {
+  font-size: 11px;
+  color: var(--ui-fg-dim);
+  font-weight: 500;
+}
+
+.sidebar-scroll {
+  flex: 1;
+  overflow-y: auto;
+  padding: 10px 8px;
+}
+
+.nav-group-label {
+  font-size: 10.5px;
+  font-weight: 700;
+  color: var(--ui-fg-muted);
+  padding: 12px 10px 4px;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+.adw-nav-list {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.adw-nav-row {
+  width: 100%;
+  background: transparent;
+  border: none;
+  border-radius: var(--ui-radius-sm);
+  padding: 8.5px 10px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: var(--ui-fg);
+  text-align: left;
+  cursor: pointer;
+  font-family: inherit;
+  font-size: 13.5px;
+  font-weight: 500;
+  transition: background 0.12s ease;
+}
+.adw-nav-row:hover {
+  background: rgba(255, 255, 255, 0.06);
+}
+[data-theme="light"] .adw-nav-row:hover {
+  background: rgba(0, 0, 0, 0.05);
+}
+.adw-nav-row.active {
+  background: var(--ui-accent-soft);
+  color: var(--ui-accent);
+  font-weight: 600;
+}
+
+.sidebar-footer {
+  padding: 12px 14px;
+  border-top: 1px solid var(--ui-border);
+  font-size: 12px;
+  color: var(--ui-fg-dim);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+.sidebar-footer strong {
+  color: var(--ui-fg);
+}
+.link-btn {
+  background: none;
+  border: none;
+  color: var(--ui-accent);
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  font-family: inherit;
+}
+.link-btn:hover {
+  text-decoration: underline;
+}
+
+/* ==================== MAIN WORKSPACE AREA ==================== */
+.adw-content {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  min-width: 0;
+  background: var(--ui-window-bg);
+}
+
+.main-headerbar {
+  height: 54px;
+  min-height: 54px;
+  padding: 0 18px;
+  background: var(--ui-headerbar-bg);
+  border-bottom: 1px solid var(--ui-border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.headerbar-left {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
+}
+.mobile-logo {
+  display: none;
+}
+.header-titles {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+.window-title {
+  font-size: 14.5px;
+  font-weight: 700;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.window-subtitle {
+  font-size: 11.5px;
+  color: var(--ui-fg-dim);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.headerbar-right {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.adw-icon-btn {
+  height: 32px;
+  padding: 0 9px;
+  border-radius: 7px;
+  border: 1px solid transparent;
+  background: transparent;
+  color: var(--ui-fg);
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  font-size: 12.5px;
+  font-weight: 600;
+  font-family: inherit;
+  transition: background 0.12s ease;
+}
+.adw-icon-btn:hover {
+  background: var(--ui-card-bg);
+  border-color: var(--ui-border);
+}
+
+/* ==================== TOOL PANELS & WIZARD STRUCTURE ==================== */
+.adw-workspace {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  overflow: hidden;
+}
+
+.tool-panel {
+  display: none;
+  flex-direction: column;
+  height: 100%;
+  min-height: 0;
+}
+.tool-panel.active {
+  display: flex;
+}
+
+.tool-form-wrapper {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  min-height: 0;
+}
+
+/* Top Step Switcher Bar */
+.wizard-stepper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 10px 16px;
+  background: var(--ui-window-bg);
+  border-bottom: 1px solid var(--ui-border);
+  flex-shrink: 0;
+  flex-wrap: wrap;
+}
+
+.step-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 6px 13px;
+  border-radius: var(--ui-radius-sm);
+  border: 1px solid transparent;
+  background: transparent;
+  color: var(--ui-fg-dim);
+  font-size: 13px;
+  font-weight: 600;
+  font-family: inherit;
+  cursor: pointer;
+  transition: all 0.12s ease;
+}
+.step-pill:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+.step-pill:not(:disabled):hover {
+  background: var(--ui-card-bg);
+  color: var(--ui-fg);
+}
+.step-pill.active {
+  background: var(--ui-card-bg);
+  border-color: var(--ui-border-strong);
+  color: var(--ui-fg);
+  box-shadow: var(--ui-shadow);
+}
+.step-pill.done {
+  color: var(--ui-accent);
+}
+.step-num {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.1);
+  color: var(--ui-fg-dim);
+  font-size: 11px;
+  font-weight: 700;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+[data-theme="light"] .step-num {
+  background: rgba(0, 0, 0, 0.08);
+}
+.step-pill.active .step-num {
+  background: var(--ui-accent);
+  color: #ffffff;
+}
+.step-pill.done .step-num {
+  background: var(--ui-accent-soft);
+  color: var(--ui-accent);
+}
+.step-arrow {
+  color: var(--ui-fg-muted);
+  font-size: 12px;
+  user-select: none;
+}
+
+/* Wizard Stage */
+.wizard-stage {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  padding: 20px 24px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.wizard-step {
+  display: none;
+  width: 100%;
+  max-width: 840px;
+  flex: 1;
+  flex-direction: column;
+  min-height: 0;
+  animation: fadeStep 0.14s ease;
+}
+.wizard-step.active {
+  display: flex;
+}
+
+@keyframes fadeStep {
+  from { opacity: 0; transform: translateY(3px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.step-header {
+  margin-bottom: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 10px;
+  flex-shrink: 0;
+}
+.step-header h2 {
+  font-size: 17px;
+  font-weight: 700;
+}
+.step-header p {
+  font-size: 13px;
+  color: var(--ui-fg-dim);
+}
+
+/* Quick Summary Bar inside steps */
+.step-summary-bar {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 12px;
+  flex-shrink: 0;
+}
+.summary-chip {
+  font-size: 12px;
+  font-weight: 600;
+  padding: 4px 10px;
+  border-radius: 99px;
+  background: var(--ui-card-bg);
+  border: 1px solid var(--ui-border-strong);
+  color: var(--ui-fg-dim);
+}
+.summary-chip strong {
+  color: var(--ui-fg);
+}
+
+/* Feature Pills below Upload Dropzone */
+.feature-mini-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+  margin-top: 14px;
+  flex-shrink: 0;
+}
+.feature-mini-card {
+  background: var(--ui-card-bg);
+  border: 1px solid var(--ui-border);
+  border-radius: var(--ui-radius-sm);
+  padding: 11px 13px;
+}
+.feature-mini-card b {
+  font-size: 12.5px;
+  display: block;
+  margin-bottom: 2px;
+}
+.feature-mini-card small {
+  font-size: 11.5px;
+  color: var(--ui-fg-dim);
+}
+
+/* Wizard Bottom Navigation Bar */
+.wizard-footer {
+  height: 60px;
+  min-height: 60px;
+  padding: 0 24px;
+  background: var(--ui-headerbar-bg);
+  border-top: 1px solid var(--ui-border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  flex-shrink: 0;
+}
+
+.wizard-status {
+  font-size: 13px;
+  color: var(--ui-fg-dim);
+  text-align: center;
+  flex: 1;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* ==================== BUTTONS & INPUTS ==================== */
+.adw-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  padding: 7px 14px;
+  border-radius: var(--ui-radius-sm);
+  border: 1px solid var(--ui-border-strong);
+  background: var(--ui-card-bg);
+  color: var(--ui-fg);
+  font-size: 13.5px;
+  font-weight: 600;
+  font-family: inherit;
+  cursor: pointer;
+  transition: background 0.12s ease;
+}
+.adw-btn:hover:not(:disabled) {
+  background: var(--ui-card-hover);
+}
+.adw-btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+.adw-btn.suggested {
+  background: var(--ui-accent);
+  border-color: transparent;
+  color: #ffffff;
+}
+.adw-btn.suggested:hover:not(:disabled) {
+  background: var(--ui-accent-hover);
+}
+.adw-btn.destructive {
+  color: var(--ui-danger);
+}
+
+.adw-btn-row {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.adw-entry {
+  width: 100%;
+  padding: 7px 11px;
+  border-radius: var(--ui-radius-sm);
+  border: 1px solid var(--ui-border-strong);
+  background: var(--ui-input-bg);
+  color: var(--ui-fg);
+  font-size: 13.5px;
+  font-family: inherit;
+}
+.adw-entry:focus {
+  outline: 2px solid var(--ui-accent);
+  border-color: transparent;
+}
+.compact-entry {
+  width: 150px;
+}
+
+/* ==================== DROPZONE ==================== */
+.adw-dropzone {
+  flex: 1;
+  min-height: 210px;
+  max-height: 310px;
+  margin: auto 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 28px 24px;
+  background: var(--ui-card-bg);
+  border: 1.5px dashed var(--ui-border-strong);
+  border-radius: var(--ui-radius);
+  cursor: pointer;
+  transition: border-color 0.15s ease, background 0.15s ease;
+}
+.adw-dropzone:hover,
+.adw-dropzone.dragging {
+  border-color: var(--ui-accent);
+  background: var(--ui-card-hover);
+}
+.drop-icon {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: var(--ui-accent-soft);
+  color: var(--ui-accent);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 12px;
+}
+.drop-icon svg.ico {
+  width: 22px;
+  height: 22px;
+}
+.adw-dropzone strong {
+  font-size: 15px;
+  font-weight: 700;
+  margin-bottom: 4px;
+}
+.adw-dropzone small {
+  font-size: 12.5px;
+  color: var(--ui-fg-dim);
+}
+
+.loaded-file-banner {
+  margin-top: 12px;
+  padding: 12px 16px;
+  background: var(--ui-card-bg);
+  border: 1px solid var(--ui-border-strong);
+  border-radius: var(--ui-radius);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+.loaded-file-banner[hidden] {
+  display: none !important;
+}
+
+/* ==================== SLIDE THUMBNAIL GRID ==================== */
+.adw-view-frame {
+  flex: 1;
+  min-height: 200px;
+  background: var(--ui-view-bg);
+  border: 1px solid var(--ui-border);
+  border-radius: var(--ui-radius);
+  padding: 14px;
+  overflow-y: auto;
+}
+
+.thumbnails {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(124px, 1fr));
+  gap: 12px;
+}
+
+.thumb {
+  position: relative;
+  background: var(--ui-card-bg);
+  border: 2px solid var(--ui-border);
+  border-radius: var(--ui-radius-sm);
+  overflow: hidden;
+  cursor: pointer;
+  user-select: none;
+  transition: border-color 0.12s ease;
+}
+.thumb:hover {
+  border-color: var(--ui-border-strong);
+}
+.thumb.active {
+  border-color: var(--ui-accent);
+}
+.thumb img {
+  width: 100%;
+  height: 132px;
+  object-fit: contain;
+  background: #ffffff;
+  display: block;
+}
+.thumb .check {
+  position: absolute;
+  top: 6px;
+  right: 6px;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: rgba(0, 0, 0, 0.55);
+  border: 1.5px solid rgba(255, 255, 255, 0.7);
+  color: #fff;
+  font-size: 11px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.thumb.active .check {
+  background: var(--ui-accent);
+  border-color: var(--ui-accent);
+}
+.thumb .num {
+  padding: 5px 6px;
+  font-size: 11.5px;
+  font-weight: 600;
+  text-align: center;
+  background: var(--ui-card-bg);
+}
+
+/* ==================== PREFERENCES GROUP (SETTINGS STEP) ==================== */
+.adw-pref-group {
+  background: var(--ui-card-bg);
+  border: 1px solid var(--ui-border);
+  border-radius: var(--ui-radius);
+  overflow: hidden;
+  margin-bottom: 14px;
+  box-shadow: var(--ui-shadow);
+}
+
+.adw-pref-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--ui-border);
+}
+.adw-pref-row:last-child {
+  border-bottom: none;
+}
+.row-title {
+  display: flex;
+  flex-direction: column;
+}
+.row-title b {
+  font-size: 13.5px;
+  font-weight: 600;
+}
+.row-title small {
+  font-size: 12px;
+  color: var(--ui-fg-dim);
+}
+
+.adw-segmented {
+  display: inline-flex;
+  background: var(--ui-input-bg);
+  border: 1px solid var(--ui-border-strong);
+  border-radius: var(--ui-radius-sm);
+  padding: 2px;
+  gap: 2px;
+  flex-wrap: wrap;
+}
+.adw-segmented label {
+  cursor: pointer;
+}
+.adw-segmented input {
+  display: none;
+}
+.adw-segmented span {
+  display: block;
+  padding: 5px 10px;
+  border-radius: 6px;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--ui-fg-dim);
+}
+.adw-segmented input:checked + span {
+  background: var(--ui-card-bg);
+  color: var(--ui-fg);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.25);
+}
+
+.range-control {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 220px;
+}
+.range-control input[type="range"] {
+  flex: 1;
+  accent-color: var(--ui-accent);
+  cursor: pointer;
+}
+.mono-badge {
+  min-width: 34px;
+  text-align: center;
+  padding: 2px 7px;
+  border-radius: 6px;
+  background: var(--ui-input-bg);
+  border: 1px solid var(--ui-border);
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.adw-switch {
+  width: 18px;
+  height: 18px;
+  accent-color: var(--ui-accent);
+  cursor: pointer;
+}
+
+/* ==================== STEP 4: 1ST PAGE PREVIEW CANVAS ==================== */
+.preview-sheet-container {
+  flex: 1;
+  min-height: 220px;
+  background: var(--ui-view-bg);
+  border: 1px solid var(--ui-border);
+  border-radius: var(--ui-radius);
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  overflow: auto;
+}
+.a4-preview-img {
+  max-width: 100%;
+  max-height: 420px;
+  background: #ffffff;
+  border-radius: 6px;
+  box-shadow: 0 6px 24px rgba(0, 0, 0, 0.4);
+  border: 1px solid var(--ui-border-strong);
+  object-fit: contain;
+}
+.preview-caption {
+  margin-top: 10px;
+  font-size: 12.5px;
+  color: var(--ui-fg-dim);
+}
+
+/* ==================== MERGE / IMAGES QUEUE LIST ==================== */
+.merge-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 14px;
+  background: var(--ui-card-bg);
+  border-bottom: 1px solid var(--ui-border);
+}
+.merge-item:first-child {
+  border-top-left-radius: var(--ui-radius-sm);
+  border-top-right-radius: var(--ui-radius-sm);
+}
+.merge-item:last-child {
+  border-bottom: none;
+  border-bottom-left-radius: var(--ui-radius-sm);
+  border-bottom-right-radius: var(--ui-radius-sm);
+}
+.lecture-number {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: var(--ui-input-bg);
+  font-size: 12px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.merge-file-name {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+}
+.merge-file-name b {
+  font-size: 13px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.merge-file-name small {
+  font-size: 11.5px;
+  color: var(--ui-fg-dim);
+}
+.merge-actions {
+  display: flex;
+  gap: 4px;
+}
+.merge-actions button {
+  width: 28px;
+  height: 28px;
+  border-radius: 6px;
+  border: 1px solid var(--ui-border-strong);
+  background: var(--ui-input-bg);
+  color: var(--ui-fg);
+  cursor: pointer;
+}
+.merge-actions button:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+}
+.merge-actions button.remove:hover {
+  background: var(--ui-danger);
+  color: #fff;
+}
+
+.org-card-actions {
+  display: flex;
+  justify-content: space-between;
+  padding: 4px;
+  background: var(--ui-input-bg);
+  border-top: 1px solid var(--ui-border);
+  gap: 3px;
+}
+.org-card-actions button {
+  flex: 1;
+  background: var(--ui-card-bg);
+  border: 1px solid var(--ui-border);
+  color: var(--ui-fg);
+  border-radius: 5px;
+  padding: 3px 0;
+  font-size: 11.5px;
+  cursor: pointer;
+}
+.org-card-actions button:hover {
+  background: var(--ui-accent);
+  color: #fff;
+}
+.org-card-actions button.del-btn:hover {
+  background: var(--ui-danger);
+}
+
+/* ==================== INFO & GUIDE PAGE ==================== */
+.info-scroll-area {
+  flex: 1;
+  overflow-y: auto;
+  padding: 24px;
+}
+.info-container {
+  max-width: 860px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  padding-bottom: 32px;
+}
+.info-hero-card {
+  background: var(--ui-card-bg);
+  border: 1px solid var(--ui-border-strong);
+  border-radius: var(--ui-radius);
+  padding: 20px 22px;
+  box-shadow: var(--ui-shadow);
+}
+.info-hero-card h2 {
+  font-size: 19px;
+  font-weight: 700;
+  margin-bottom: 6px;
+}
+.info-hero-card p {
+  font-size: 13.5px;
+  color: var(--ui-fg-dim);
+  line-height: 1.55;
+}
+.info-section-title {
+  font-size: 15px;
+  font-weight: 700;
+  margin-bottom: 10px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.info-grid-2 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+.info-card {
+  background: var(--ui-card-bg);
+  border: 1px solid var(--ui-border);
+  border-radius: var(--ui-radius);
+  padding: 15px 17px;
+  box-shadow: var(--ui-shadow);
+}
+.info-card h3 {
+  font-size: 14px;
+  font-weight: 700;
+  margin-bottom: 5px;
+  color: var(--ui-fg);
+  display: flex;
+  align-items: center;
+  gap: 7px;
+}
+.info-card p {
+  font-size: 12.8px;
+  color: var(--ui-fg-dim);
+  line-height: 1.5;
+}
+.pipeline-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.pipeline-item {
+  background: var(--ui-card-bg);
+  border: 1px solid var(--ui-border);
+  border-radius: var(--ui-radius-sm);
+  padding: 12px 15px;
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+}
+.pipeline-badge {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: var(--ui-accent-soft);
+  color: var(--ui-accent);
+  font-size: 12px;
+  font-weight: 700;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+.pipeline-item b {
+  font-size: 13.5px;
+  display: block;
+  margin-bottom: 2px;
+}
+.pipeline-item small {
+  font-size: 12.5px;
+  color: var(--ui-fg-dim);
+  line-height: 1.45;
+  display: block;
+}
+
+.precaution-box {
+  background: var(--ui-card-bg);
+  border: 1px solid var(--ui-border-strong);
+  border-left: 4px solid var(--ui-warning);
+  border-radius: var(--ui-radius-sm);
+  padding: 14px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.precaution-item {
+  font-size: 13px;
+  color: var(--ui-fg-dim);
+  line-height: 1.5;
+}
+.precaution-item strong {
+  color: var(--ui-fg);
+}
+
+/* ==================== ABOUT DIALOG ==================== */
+.adw-dialog-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.55);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 100;
+  padding: 16px;
+}
+.adw-dialog-backdrop[hidden] {
+  display: none !important;
+}
+.adw-about-dialog {
+  position: relative;
+  width: 100%;
+  max-width: 390px;
+  background: var(--ui-headerbar-bg);
+  border: 1px solid var(--ui-border-strong);
+  border-radius: 16px;
+  padding: 24px 20px 20px;
+  text-align: center;
+  box-shadow: 0 14px 40px rgba(0, 0, 0, 0.5);
+}
+.adw-dialog-close {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  border: none;
+  background: var(--ui-card-bg);
+  color: var(--ui-fg);
+  font-size: 16px;
+  cursor: pointer;
+}
+.about-version {
+  display: inline-block;
+  font-size: 11.5px;
+  font-weight: 600;
+  padding: 2px 10px;
+  border-radius: 99px;
+  background: var(--ui-accent-soft);
+  color: var(--ui-accent);
+  margin: 4px 0 12px;
+}
+.about-desc {
+  font-size: 13px;
+  color: var(--ui-fg-dim);
+  margin-bottom: 14px;
+}
+.about-rows {
+  background: var(--ui-card-bg);
+  border: 1px solid var(--ui-border);
+  border-radius: 10px;
+  text-align: left;
+  overflow: hidden;
+}
+.about-row {
+  display: flex;
+  justify-content: space-between;
+  padding: 9px 12px;
+  font-size: 12.5px;
+  border-bottom: 1px solid var(--ui-border);
+}
+.about-row:last-child {
+  border-bottom: none;
+}
+
+/* ==================== MOBILE ADAPTIVE ==================== */
+.adw-bottom-bar {
+  display: none;
+}
+
+@media (max-width: 860px) {
+  .adw-window {
+    grid-template-columns: 1fr;
+  }
+  .adw-sidebar {
+    display: none;
+  }
+  .mobile-logo {
+    display: flex;
+  }
+  .wizard-stage {
+    padding: 14px;
+  }
+  .feature-mini-grid,
+  .info-grid-2 {
+    grid-template-columns: 1fr;
+  }
+  .adw-pref-row {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+  }
+  .wizard-footer {
+    padding: 0 12px;
+    margin-bottom: 58px;
+  }
+  .info-scroll-area {
+    padding: 16px 14px 76px;
+  }
+  .adw-bottom-bar {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 58px;
+    background: var(--ui-headerbar-bg);
+    border-top: 1px solid var(--ui-border-strong);
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    z-index: 60;
+  }
+  .bottom-tab {
+    background: none;
+    border: none;
+    color: var(--ui-fg-dim);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 2px;
+    font-family: inherit;
+    cursor: pointer;
+  }
+  .bottom-tab small {
+    font-size: 9.5px;
+    font-weight: 600;
+  }
+  .bottom-tab.active {
+    color: var(--ui-accent);
+  }
+}
+
+  </style>
+</head>
+<body>
+  <div class="adw-window">
+    <!-- ==================== SIDEBAR ==================== -->
+    <aside class="adw-sidebar" id="sidebar">
+      <div class="sidebar-header">
+        <a class="brand" href="/" id="brandHomeLink" aria-label="Concentric Notes Converter Home">
+          <div class="brand-mark">
+            <svg width="18" height="18" viewBox="0 0 128 128" fill="none">
+              <ellipse cx="64" cy="64" rx="46" ry="24" transform="rotate(-32 64 64)" stroke="#3584e4" stroke-width="10"/>
+              <ellipse cx="64" cy="64" rx="46" ry="24" transform="rotate(32 64 64)" stroke="#9a9996" stroke-width="9"/>
+              <circle cx="64" cy="64" r="12" fill="#f6f5f4"/>
+            </svg>
+          </div>
+          <div class="brand-text">
+            <strong>Concentric Notes Converter</strong>
+            <small>Smart Study PDF Suite</small>
+          </div>
+        </a>
+      </div>
+
+      <div class="sidebar-scroll">
+        <div class="nav-group-label">NOTES WORKSPACE</div>
+        <nav class="adw-nav-list" aria-label="PDF Tools">
+          <button type="button" class="adw-nav-row active tool-tab" data-tool="notes" data-title="Process Notes — Smart Ink Saver">
+            <svg class="ico" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+            <span>Process Notes</span>
+          </button>
+
+          <button type="button" class="adw-nav-row tool-tab" data-tool="merge" data-title="Merge Lectures — Chapter Builder">
+            <svg class="ico" viewBox="0 0 24 24"><path d="M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01"/></svg>
+            <span>Merge Lectures</span>
+          </button>
+
+          <div class="nav-group-label">ESSENTIAL PDF TOOLS</div>
+
+          <button type="button" class="adw-nav-row tool-tab" data-tool="split" data-title="Split & Extract PDF Pages">
+            <svg class="ico" viewBox="0 0 24 24"><circle cx="6" cy="6" r="3"/><circle cx="6" cy="18" r="3"/><line x1="20" y1="4" x2="8.12" y2="15.88"/><line x1="14.47" y1="14.48" x2="20" y2="20"/><line x1="8.12" y1="8.12" x2="12" y2="12"/></svg>
+            <span>Split &amp; Extract</span>
+          </button>
+
+          <button type="button" class="adw-nav-row tool-tab" data-tool="organize" data-title="Organize, Rotate & Delete Pages">
+            <svg class="ico" viewBox="0 0 24 24"><path d="M21 2v6h-6"/><path d="M3 12a9 9 0 0 1 15-6.7L21 8"/><path d="M3 22v-6h6"/><path d="M21 12a9 9 0 0 1-15 6.7L3 16"/></svg>
+            <span>Organize &amp; Rotate</span>
+          </button>
+
+          <button type="button" class="adw-nav-row tool-tab" data-tool="img2pdf" data-title="Images to PDF Converter">
+            <svg class="ico" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+            <span>Images to PDF</span>
+          </button>
+
+          <button type="button" class="adw-nav-row tool-tab" data-tool="pdf2img" data-title="Export PDF Slides to Images (ZIP)">
+            <svg class="ico" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+            <span>PDF to Images</span>
+          </button>
+
+          <div class="nav-group-label">GUIDE &amp; HELP</div>
+
+          <button type="button" class="adw-nav-row tool-tab" data-tool="info" data-title="Info, How It Works & Precautions">
+            <svg class="ico" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+            <span>Info &amp; Precautions</span>
+          </button>
+        </nav>
+      </div>
+
+      <div class="sidebar-footer">
+        <div>By <strong>Avadhesh Pingoriya</strong></div>
+        <button type="button" class="link-btn" id="openAboutSidebar">About</button>
+      </div>
+    </aside>
+
+    <!-- ==================== MAIN CONTENT ==================== -->
+    <div class="adw-content">
+      <header class="main-headerbar">
+        <div class="headerbar-left">
+          <div class="brand-mark mobile-logo">
+            <svg width="16" height="16" viewBox="0 0 128 128" fill="none">
+              <ellipse cx="64" cy="64" rx="46" ry="24" transform="rotate(-32 64 64)" stroke="#3584e4" stroke-width="10"/>
+              <ellipse cx="64" cy="64" rx="46" ry="24" transform="rotate(32 64 64)" stroke="#9a9996" stroke-width="9"/>
+              <circle cx="64" cy="64" r="12" fill="#f6f5f4"/>
+            </svg>
+          </div>
+          <div class="header-titles">
+            <span class="window-title" id="crumb">Process Notes — Smart Ink Saver</span>
+            <span class="window-subtitle">Concentric Notes Converter · Created by Avadhesh Pingoriya</span>
+          </div>
+        </div>
+
+        <div class="headerbar-right">
+          <button type="button" class="adw-icon-btn" id="openInfoTopBtn" title="How It Works & Precautions">
+            <svg class="ico" viewBox="0 0 24 24"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
+            <span>Guide</span>
+          </button>
+          <button type="button" class="adw-icon-btn" id="themeToggle" title="Toggle Dark / Light Theme" aria-label="Toggle Theme">
+            <svg class="ico" viewBox="0 0 24 24"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+          </button>
+          <button type="button" class="adw-icon-btn" id="openAboutBtn" title="About Concentric Notes Converter" aria-label="About">
+            <svg class="ico" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+          </button>
+        </div>
+      </header>
+
+      <main class="adw-workspace">
+        <!-- ==================== TOOL 1: PROCESS NOTES (4-STEP WIZARD) ==================== -->
+        <section id="notesTool" class="tool-panel active">
+          <form id="form" class="tool-form-wrapper">
+            <!-- Top Stepper Bar -->
+            <div class="wizard-stepper">
+              <button type="button" class="step-pill active" data-step="1">
+                <span class="step-num">1</span><span>Upload PDF</span>
+              </button>
+              <span class="step-arrow">›</span>
+              <button type="button" class="step-pill" data-step="2" disabled>
+                <span class="step-num">2</span><span>Select Slides</span>
+              </button>
+              <span class="step-arrow">›</span>
+              <button type="button" class="step-pill" data-step="3" disabled>
+                <span class="step-num">3</span><span>Settings</span>
+              </button>
+              <span class="step-arrow">›</span>
+              <button type="button" class="step-pill" data-step="4" disabled>
+                <span class="step-num">4</span><span>Preview &amp; Export</span>
+              </button>
+            </div>
+
+            <!-- Wizard Stage -->
+            <div class="wizard-stage">
+              <!-- STEP 1: UPLOAD -->
+              <div class="wizard-step active" data-step="1">
+                <div class="step-header">
+                  <div>
+                    <h2>Step 1 · Upload Lecture PDF</h2>
+                    <p>Convert dark or colorful class slides into clean, ink-saving A4 study handouts.</p>
+                  </div>
+                </div>
+                <label class="adw-dropzone" id="dropzone">
+                  <input id="pdf" type="file" name="pdf" accept="application/pdf" required>
+                  <div class="drop-icon">
+                    <svg class="ico" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+                  </div>
+                  <strong>Drop your lecture PDF here, or click to browse</strong>
+                  <small id="fileInfo">Supports digital board slides &amp; presentation PDFs</small>
+                </label>
+
+                <div class="loaded-file-banner" id="notesLoadedBanner" hidden>
+                  <div>
+                    <strong id="notesLoadedName">Loaded.pdf</strong>
+                    <div style="font-size:12px;color:var(--ui-fg-dim);">Your current slide selections and settings are preserved.</div>
+                  </div>
+                  <button type="button" class="adw-btn suggested" id="notesContinueStep2Btn">Continue to Slides →</button>
+                </div>
+
+                <div class="feature-mini-grid">
+                  <div class="feature-mini-card">
+                    <b>V1.2 Smart Ink Saver</b>
+                    <small>Automatically detects dark slides, inverts backgrounds, and sharpens text &amp; diagrams.</small>
+                  </div>
+                  <div class="feature-mini-card">
+                    <b>Multi-Slide A4 Grid</b>
+                    <small>Fit 1, 2, 3, 4, 6, 8, or 9 slides onto each A4 page to save paper while studying.</small>
+                  </div>
+                  <div class="feature-mini-card">
+                    <b>1st Page Live Check</b>
+                    <small>Preview how Page 1 will print in Step 4 before converting the entire PDF document.</small>
+                  </div>
+                </div>
+              </div>
+
+              <!-- STEP 2: SELECT SLIDES -->
+              <div class="wizard-step" data-step="2">
+                <div class="step-header">
+                  <div>
+                    <h2>Step 2 · Choose Slides to Print</h2>
+                    <p id="pageInfo">Click any slide thumbnail to select or deselect it. You can return to this step anytime.</p>
+                  </div>
+                  <div class="adw-btn-row">
+                    <input type="text" id="rangeQuickInput" class="adw-entry compact-entry" placeholder="Range e.g. 1-5, 8">
+                    <button type="button" class="adw-btn" id="applyRangeBtn">Apply</button>
+                    <button type="button" class="adw-btn" id="all">All</button>
+                    <button type="button" class="adw-btn" id="invertSel">Invert</button>
+                    <button type="button" class="adw-btn" id="none">Clear</button>
+                  </div>
+                </div>
+                <div class="step-summary-bar">
+                  <span class="summary-chip" id="chipSelectedCount">Selected: <strong>0 slides</strong></span>
+                  <span class="summary-chip" id="chipEstSheets">Estimated Output: <strong>0 A4 sheets</strong> (3 per page)</span>
+                </div>
+                <input type="hidden" id="pages" name="pages">
+                <div class="adw-view-frame">
+                  <div id="thumbnails" class="thumbnails"></div>
+                </div>
+              </div>
+
+              <!-- STEP 3: CONVERSION SETTINGS -->
+              <div class="wizard-step" data-step="3">
+                <div class="step-header">
+                  <div>
+                    <h2>Step 3 · Ink Saving &amp; A4 Layout Settings</h2>
+                    <p>Customize how slides are processed and arranged on each A4 page.</p>
+                  </div>
+                  <span class="summary-chip" id="chipStep3Summary"><strong>0 slides</strong> → <strong>0 A4 pages</strong></span>
+                </div>
+
+                <div class="adw-pref-group">
+                  <div class="adw-pref-row">
+                    <div class="row-title">
+                      <b>Processing Mode</b>
+                      <small>V1.2 Smart Ink Saver removes dark backgrounds while keeping crisp outlines</small>
+                    </div>
+                    <div class="adw-segmented">
+                      <label><input type="radio" name="mode" value="smart" checked><span>Smart Ink Saver</span></label>
+                      <label><input type="radio" name="mode" value="invert_bw"><span>Invert B&amp;W</span></label>
+                      <label><input type="radio" name="mode" value="gray"><span>Grayscale</span></label>
+                      <label><input type="radio" name="mode" value="original"><span>Original</span></label>
+                    </div>
+                  </div>
+
+                  <div class="adw-pref-row">
+                    <div class="row-title">
+                      <b>Outline Strength</b>
+                      <small>Default 55 matches V1.2 threshold (lower = lighter ink, higher = bolder lines)</small>
+                    </div>
+                    <div class="range-control">
+                      <input type="range" id="strength" name="strength" min="0" max="100" value="55">
+                      <span id="strengthValue" class="mono-badge">55</span>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="adw-pref-group">
+                  <div class="adw-pref-row">
+                    <div class="row-title">
+                      <b>Slides per A4 Sheet</b>
+                      <small>3 slides per page in Portrait is ideal for readable lecture notes</small>
+                    </div>
+                    <div class="adw-segmented">
+                      <label><input type="radio" name="slides_per_page" value="1"><span>1</span></label>
+                      <label><input type="radio" name="slides_per_page" value="2"><span>2</span></label>
+                      <label><input type="radio" name="slides_per_page" value="3" checked><span>3</span></label>
+                      <label><input type="radio" name="slides_per_page" value="4"><span>4</span></label>
+                      <label><input type="radio" name="slides_per_page" value="6"><span>6</span></label>
+                      <label><input type="radio" name="slides_per_page" value="8"><span>8</span></label>
+                      <label><input type="radio" name="slides_per_page" value="9"><span>9</span></label>
+                    </div>
+                  </div>
+
+                  <div class="adw-pref-row">
+                    <div class="row-title">
+                      <b>Page Orientation</b>
+                      <small>Portrait for vertical stacks (1, 2, 3) · Landscape for wide grids</small>
+                    </div>
+                    <div class="adw-segmented">
+                      <label><input type="radio" name="orientation" value="portrait" checked><span>Portrait</span></label>
+                      <label><input type="radio" name="orientation" value="landscape"><span>Landscape</span></label>
+                    </div>
+                  </div>
+
+                  <div class="adw-pref-row">
+                    <div class="row-title">
+                      <b>Page Margins</b>
+                      <small>Compact maximizes slide size; Wide leaves extra room for binding</small>
+                    </div>
+                    <div class="adw-segmented">
+                      <label><input type="radio" name="margin" value="compact"><span>Compact</span></label>
+                      <label><input type="radio" name="margin" value="normal" checked><span>Normal</span></label>
+                      <label><input type="radio" name="margin" value="wide"><span>Wide</span></label>
+                    </div>
+                  </div>
+
+                  <div class="adw-pref-row">
+                    <div class="row-title">
+                      <b>Draw Slide Borders</b>
+                      <small>Adds a thin grey frame around each slide on the A4 sheet</small>
+                    </div>
+                    <input type="checkbox" class="adw-switch" name="border" value="1">
+                  </div>
+
+                  <div class="adw-pref-row">
+                    <div class="row-title">
+                      <b>Stamp Page Numbers</b>
+                      <small>Prints "Page 1 of N" centered at the bottom of every sheet</small>
+                    </div>
+                    <input type="checkbox" class="adw-switch" name="page_numbers" value="1" checked>
+                  </div>
+
+                  <div class="adw-pref-row">
+                    <div class="row-title">
+                      <b>Header Title / Output Filename</b>
+                      <small>Optional chapter title stamped at the top of each page</small>
+                    </div>
+                    <input type="text" name="header_text" id="headerText" class="adw-entry" style="max-width:260px;" placeholder="e.g. Physics Lecture 01">
+                  </div>
+                </div>
+              </div>
+
+              <!-- STEP 4: 1ST PAGE PREVIEW & EXPORT -->
+              <div class="wizard-step" data-step="4">
+                <div class="step-header">
+                  <div>
+                    <h2>Step 4 · 1st Output A4 Page Preview</h2>
+                    <p>Check how Page 1 looks before generating the entire PDF. Forgot a slide or want to change strength? Click "← Previous Step".</p>
+                  </div>
+                  <button type="button" class="adw-btn" id="refreshPreviewBtn">↻ Refresh Preview</button>
+                </div>
+
+                <div class="preview-sheet-container">
+                  <img id="firstPagePreviewImg" class="a4-preview-img" alt="1st A4 Sheet Preview">
+                  <div id="firstPageMeta" class="preview-caption">Rendering 1st page preview…</div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Persistent Bottom Wizard Action Bar -->
+            <div class="wizard-footer">
+              <button type="button" class="adw-btn" id="notesBackBtn" disabled>← Previous Step</button>
+              <div class="wizard-status" id="notesFooterStatus">Step 1 of 4 · Upload a lecture PDF to begin</div>
+              <button type="button" class="adw-btn suggested" id="notesNextBtn" disabled>Next: Select Slides →</button>
+              <button type="submit" class="adw-btn suggested" id="notesGenerateBtn" style="display:none;">Download Notes PDF</button>
+            </div>
+          </form>
+        </section>
+
+        <!-- ==================== TOOL 2: MERGE LECTURES (2-STEP WIZARD) ==================== -->
+        <section id="mergeTool" class="tool-panel">
+          <div class="wizard-stepper">
+            <button type="button" class="step-pill active" data-step="1">
+              <span class="step-num">1</span><span>Add PDFs</span>
+            </button>
+            <span class="step-arrow">›</span>
+            <button type="button" class="step-pill" data-step="2" disabled>
+              <span class="step-num">2</span><span>Arrange &amp; Merge</span>
+            </button>
+          </div>
+
+          <div class="wizard-stage">
+            <div class="wizard-step active" data-step="1">
+              <div class="step-header">
+                <div>
+                  <h2>Step 1 · Add Lecture PDFs</h2>
+                  <p>Select 2 or more lecture PDF files to combine into one organized chapter document.</p>
+                </div>
+              </div>
+              <label class="adw-dropzone" for="mergeFiles">
+                <input id="mergeFiles" type="file" accept="application/pdf" multiple>
+                <div class="drop-icon">
+                  <svg class="ico" viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                </div>
+                <strong>Click to choose multiple PDF files</strong>
+                <small id="mergeInfo">Select 2 or more PDF files from your device</small>
+              </label>
+            </div>
+
+            <div class="wizard-step" data-step="2">
+              <div class="step-header">
+                <div>
+                  <h2>Step 2 · Arrange Lecture Order</h2>
+                  <p>Use ↑ and ↓ to set the chapter sequence, or click "← Previous Step" to add more PDFs.</p>
+                </div>
+                <button type="button" class="adw-btn destructive" id="clearMerge">Clear All</button>
+              </div>
+              <div class="adw-view-frame" style="margin-bottom:12px;">
+                <div id="mergeList"></div>
+              </div>
+              <div class="adw-pref-group" style="margin-bottom:0;">
+                <div class="adw-pref-row">
+                  <div class="row-title">
+                    <b>Chapter Filename</b>
+                    <small>Name for the combined PDF file</small>
+                  </div>
+                  <input id="chapterName" class="adw-entry" style="max-width:280px;" type="text" placeholder="e.g. Full_Chapter_Notes">
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="wizard-footer">
+            <button type="button" class="adw-btn" id="mergeBackBtn" disabled>← Previous Step (Add More)</button>
+            <div class="wizard-status" id="mergeStatus">Step 1 of 2 · Add at least 2 lecture PDFs</div>
+            <button type="button" class="adw-btn suggested" id="mergeNextBtn" disabled>Next: Arrange Order →</button>
+            <button type="button" class="adw-btn suggested" id="mergeButton" style="display:none;">Merge Chapter PDF</button>
+          </div>
+        </section>
+
+        <!-- ==================== TOOL 3: SPLIT & EXTRACT (2-STEP WIZARD) ==================== -->
+        <section id="splitTool" class="tool-panel">
+          <div class="wizard-stepper">
+            <button type="button" class="step-pill active" data-step="1">
+              <span class="step-num">1</span><span>Upload PDF</span>
+            </button>
+            <span class="step-arrow">›</span>
+            <button type="button" class="step-pill" data-step="2" disabled>
+              <span class="step-num">2</span><span>Select &amp; Extract</span>
+            </button>
+          </div>
+
+          <div class="wizard-stage">
+            <div class="wizard-step active" data-step="1">
+              <div class="step-header">
+                <div>
+                  <h2>Step 1 · Upload PDF to Split</h2>
+                  <p>Extract specific chapters, formula sheets, or page ranges from a large PDF.</p>
+                </div>
+              </div>
+              <label class="adw-dropzone" for="splitPdfInput">
+                <input id="splitPdfInput" type="file" accept="application/pdf">
+                <div class="drop-icon">
+                  <svg class="ico" viewBox="0 0 24 24"><circle cx="6" cy="6" r="3"/><circle cx="6" cy="18" r="3"/><line x1="20" y1="4" x2="8.12" y2="15.88"/><line x1="14.47" y1="14.48" x2="20" y2="20"/></svg>
+                </div>
+                <strong>Select a PDF file to split</strong>
+                <small id="splitFileInfo">Extract custom page ranges or odd/even pages</small>
+              </label>
+            </div>
+
+            <div class="wizard-step" data-step="2">
+              <div class="step-header">
+                <div class="adw-btn-row">
+                  <input type="text" id="splitRangeInput" class="adw-entry compact-entry" placeholder="Range e.g. 1-5, 8">
+                  <button type="button" class="adw-btn" id="splitSelectAll">All</button>
+                  <button type="button" class="adw-btn" id="splitSelectOdd">Odd</button>
+                  <button type="button" class="adw-btn" id="splitSelectEven">Even</button>
+                  <button type="button" class="adw-btn" id="splitClear">Clear</button>
+                </div>
+                <input type="text" id="splitOutName" class="adw-entry compact-entry" style="width:190px;" placeholder="Output filename">
+              </div>
+              <div class="adw-view-frame">
+                <div id="splitThumbs" class="thumbnails"></div>
+              </div>
+            </div>
+          </div>
+
+          <div class="wizard-footer">
+            <button type="button" class="adw-btn" id="splitBackBtn" disabled>← Previous Step</button>
+            <div class="wizard-status" id="splitStatus">Step 1 of 2 · Upload a PDF to extract pages</div>
+            <button type="button" class="adw-btn suggested" id="splitNextBtn" disabled>Next: Select Pages →</button>
+            <button type="button" class="adw-btn suggested" id="splitRunBtn" style="display:none;">Extract Selected Pages</button>
+          </div>
+        </section>
+
+        <!-- ==================== TOOL 4: ORGANIZE & ROTATE (2-STEP WIZARD) ==================== -->
+        <section id="organizeTool" class="tool-panel">
+          <div class="wizard-stepper">
+            <button type="button" class="step-pill active" data-step="1">
+              <span class="step-num">1</span><span>Upload PDF</span>
+            </button>
+            <span class="step-arrow">›</span>
+            <button type="button" class="step-pill" data-step="2" disabled>
+              <span class="step-num">2</span><span>Rotate &amp; Reorder</span>
+            </button>
+          </div>
+
+          <div class="wizard-stage">
+            <div class="wizard-step active" data-step="1">
+              <div class="step-header">
+                <div>
+                  <h2>Step 1 · Upload PDF to Organize</h2>
+                  <p>Fix sideways or upside-down pages, change slide order, or delete blank pages.</p>
+                </div>
+              </div>
+              <label class="adw-dropzone" for="orgPdfInput">
+                <input id="orgPdfInput" type="file" accept="application/pdf">
+                <div class="drop-icon">
+                  <svg class="ico" viewBox="0 0 24 24"><path d="M21 2v6h-6"/><path d="M3 12a9 9 0 0 1 15-6.7L21 8"/><path d="M3 22v-6h6"/><path d="M21 12a9 9 0 0 1-15 6.7L3 16"/></svg>
+                </div>
+                <strong>Select a PDF file to organize</strong>
+                <small id="orgFileInfo">Rotate 90°, reorder, or delete individual pages</small>
+              </label>
+            </div>
+
+            <div class="wizard-step" data-step="2">
+              <div class="step-header">
+                <div>
+                  <h2>Step 2 · Rotate, Reorder or Delete Pages</h2>
+                  <p style="font-size:12.5px;color:var(--ui-fg-dim);">Use the buttons below each page thumbnail to adjust it.</p>
+                </div>
+                <div class="adw-btn-row">
+                  <button type="button" class="adw-btn" id="orgRotateAllLeft">↺ All -90°</button>
+                  <button type="button" class="adw-btn" id="orgRotateAllRight">↻ All +90°</button>
+                  <button type="button" class="adw-btn" id="orgResetBtn">Reset</button>
+                </div>
+              </div>
+              <div class="adw-view-frame">
+                <div id="orgGrid" class="thumbnails"></div>
+              </div>
+            </div>
+          </div>
+
+          <div class="wizard-footer">
+            <button type="button" class="adw-btn" id="orgBackBtn" disabled>← Previous Step</button>
+            <div class="wizard-status" id="orgStatus">Step 1 of 2 · Upload a PDF to rotate or reorder pages</div>
+            <button type="button" class="adw-btn suggested" id="orgNextBtn" disabled>Next: Organize Pages →</button>
+            <button type="button" class="adw-btn suggested" id="orgSaveBtn" style="display:none;">Save Organized PDF</button>
+          </div>
+        </section>
+
+        <!-- ==================== TOOL 5: IMAGES TO PDF (2-STEP WIZARD) ==================== -->
+        <section id="img2pdfTool" class="tool-panel">
+          <div class="wizard-stepper">
+            <button type="button" class="step-pill active" data-step="1">
+              <span class="step-num">1</span><span>Add Images</span>
+            </button>
+            <span class="step-arrow">›</span>
+            <button type="button" class="step-pill" data-step="2" disabled>
+              <span class="step-num">2</span><span>Arrange &amp; Convert</span>
+            </button>
+          </div>
+
+          <div class="wizard-stage">
+            <div class="wizard-step active" data-step="1">
+              <div class="step-header">
+                <div>
+                  <h2>Step 1 · Add Notebook or Slide Images</h2>
+                  <p>Combine JPG, PNG, or WebP photos into a clean A4 PDF with optional Smart Ink Saver cleanup.</p>
+                </div>
+              </div>
+              <label class="adw-dropzone" for="imgFilesInput">
+                <input id="imgFilesInput" type="file" accept="image/*" multiple>
+                <div class="drop-icon">
+                  <svg class="ico" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+                </div>
+                <strong>Select images (JPG, PNG, WebP)</strong>
+                <small id="imgFilesInfo">No images selected yet</small>
+              </label>
+            </div>
+
+            <div class="wizard-step" data-step="2">
+              <div class="step-header">
+                <div>
+                  <h2>Step 2 · Image Sequence &amp; Ink Filter</h2>
+                  <p style="font-size:12.5px;color:var(--ui-fg-dim);">Click "← Previous Step" anytime if you want to add more photos.</p>
+                </div>
+                <button type="button" class="adw-btn destructive" id="clearImgsBtn">Clear All</button>
+              </div>
+              <div class="adw-view-frame" style="margin-bottom:12px;">
+                <div id="imgList"></div>
+              </div>
+              <div class="adw-pref-group" style="margin-bottom:0;">
+                <div class="adw-pref-row">
+                  <div class="row-title">
+                    <b>Filter Mode</b>
+                    <small>Smart Ink Saver cleans dark board photos and shadows</small>
+                  </div>
+                  <div class="adw-segmented">
+                    <label><input type="radio" name="img_mode" value="original" checked><span>Original</span></label>
+                    <label><input type="radio" name="img_mode" value="smart"><span>Smart Ink Saver</span></label>
+                    <label><input type="radio" name="img_mode" value="gray"><span>Grayscale</span></label>
+                  </div>
+                </div>
+                <div class="adw-pref-row">
+                  <div class="row-title">
+                    <b>Page Size</b>
+                    <small>Standard A4 sheet or fit to original image dimensions</small>
+                  </div>
+                  <div class="adw-segmented">
+                    <label><input type="radio" name="img_page_size" value="a4_portrait" checked><span>A4 Portrait</span></label>
+                    <label><input type="radio" name="img_page_size" value="a4_landscape"><span>A4 Landscape</span></label>
+                    <label><input type="radio" name="img_page_size" value="fit"><span>Fit Image</span></label>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="wizard-footer">
+            <button type="button" class="adw-btn" id="imgBackBtn" disabled>← Previous Step (Add More)</button>
+            <div class="wizard-status" id="img2pdfStatus">Step 1 of 2 · Select photos or slide images</div>
+            <button type="button" class="adw-btn suggested" id="imgNextBtn" disabled>Next: Arrange &amp; Settings →</button>
+            <button type="button" class="adw-btn suggested" id="img2pdfBtn" style="display:none;">Convert Images to PDF</button>
+          </div>
+        </section>
+
+        <!-- ==================== TOOL 6: PDF TO IMAGES (2-STEP WIZARD) ==================== -->
+        <section id="pdf2imgTool" class="tool-panel">
+          <div class="wizard-stepper">
+            <button type="button" class="step-pill active" data-step="1">
+              <span class="step-num">1</span><span>Upload PDF</span>
+            </button>
+            <span class="step-arrow">›</span>
+            <button type="button" class="step-pill" data-step="2" disabled>
+              <span class="step-num">2</span><span>Select &amp; Export ZIP</span>
+            </button>
+          </div>
+
+          <div class="wizard-stage">
+            <div class="wizard-step active" data-step="1">
+              <div class="step-header">
+                <div>
+                  <h2>Step 1 · Upload PDF to Export Images</h2>
+                  <p>Render selected PDF pages into crisp 2x high-resolution PNG or JPG images.</p>
+                </div>
+              </div>
+              <label class="adw-dropzone" for="p2iInput">
+                <input id="p2iInput" type="file" accept="application/pdf">
+                <div class="drop-icon">
+                  <svg class="ico" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                </div>
+                <strong>Select a PDF file</strong>
+                <small id="p2iFileInfo">Exports selected slides as a single ZIP archive</small>
+              </label>
+            </div>
+
+            <div class="wizard-step" data-step="2">
+              <div class="step-header">
+                <div class="adw-segmented">
+                  <label><input type="radio" name="p2i_format" value="png" checked><span>PNG (Lossless)</span></label>
+                  <label><input type="radio" name="p2i_format" value="jpg"><span>JPG (Smaller Size)</span></label>
+                </div>
+                <div class="adw-btn-row">
+                  <button type="button" class="adw-btn" id="p2iAllBtn">Select All</button>
+                  <button type="button" class="adw-btn" id="p2iClearBtn">Clear</button>
+                </div>
+              </div>
+              <div class="adw-view-frame">
+                <div id="p2iThumbs" class="thumbnails"></div>
+              </div>
+            </div>
+          </div>
+
+          <div class="wizard-footer">
+            <button type="button" class="adw-btn" id="p2iBackBtn" disabled>← Previous Step</button>
+            <div class="wizard-status" id="p2iStatus">Step 1 of 2 · Upload a PDF to export slides as images</div>
+            <button type="button" class="adw-btn suggested" id="p2iNextBtn" disabled>Next: Select Slides →</button>
+            <button type="button" class="adw-btn suggested" id="p2iRunBtn" style="display:none;">Download ZIP</button>
+          </div>
+        </section>
+
+        <!-- ==================== TOOL 7: INFO, HOW IT WORKS & PRECAUTIONS ==================== -->
+        <section id="infoTool" class="tool-panel">
+          <div class="info-scroll-area">
+            <div class="info-container">
+              <div class="info-hero-card">
+                <h2>Concentric Notes Converter — Guide &amp; Documentation</h2>
+                <p>
+                  Designed and built by <strong>Avadhesh Pingoriya</strong>, Concentric Notes Converter is an all-in-one study PDF suite made for students. Coaching and classroom digital board slides often use pitch-black or dark colored backgrounds that waste massive amounts of printer ink and make handwritten revision difficult. Concentric converts them into clean, white-background, multi-slide A4 study sheets in seconds.
+                </p>
+              </div>
+
+              <div>
+                <div class="info-section-title">
+                  <svg class="ico" viewBox="0 0 24 24"><path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z"/></svg>
+                  <span>How the V1.2 Smart Ink Saver Engine Works</span>
+                </div>
+                <div class="pipeline-list">
+                  <div class="pipeline-item">
+                    <span class="pipeline-badge">1</span>
+                    <div>
+                      <b>Automatic Dark-Slide Detection</b>
+                      <small>The algorithm inspects both the outer border band and overall luminance of every slide. Only predominantly dark slides are inverted—slides that already have a white background are never turned black.</small>
+                    </div>
+                  </div>
+                  <div class="pipeline-item">
+                    <span class="pipeline-badge">2</span>
+                    <div>
+                      <b>Local Contrast Enhancement (CLAHE)</b>
+                      <small>Applies Contrast Limited Adaptive Histogram Equalization (clip limit 1.25 across an 8×8 tile grid) to boost faint teacher handwriting, thin geometry lines, and low-contrast formulas before thresholding.</small>
+                    </div>
+                  </div>
+                  <div class="pipeline-item">
+                    <span class="pipeline-badge">3</span>
+                    <div>
+                      <b>Gaussian Smoothing &amp; V4 Adaptive Thresholding</b>
+                      <small>A light 3×3 Gaussian blur removes JPEG compression artifacts, followed by a 41×41 local Gaussian adaptive threshold controlled by your <strong>Outline Strength</strong> slider (default 55) to turn backgrounds pure white (#FFFFFF) and text crisp black.</small>
+                    </div>
+                  </div>
+                  <div class="pipeline-item">
+                    <span class="pipeline-badge">4</span>
+                    <div>
+                      <b>8-Connected Component Speckle Cleanup</b>
+                      <small>Scans connected ink components and automatically erases microscopic isolated dust/noise specks without touching decimal points, minus signs, or diagram labels.</small>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div>
+                <div class="info-section-title">
+                  <svg class="ico" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="3" y1="15" x2="21" y2="15"/></svg>
+                  <span>What Each Tool Does</span>
+                </div>
+                <div class="info-grid-2">
+                  <div class="info-card">
+                    <h3>1. Process Notes (Core)</h3>
+                    <p>Converts lecture slides using Smart Ink Saver, Invert B&amp;W, Grayscale, or Original mode, and packs 1, 2, 3, 4, 6, 8, or 9 slides onto each A4 page with optional borders, headers, and page numbers.</p>
+                  </div>
+                  <div class="info-card">
+                    <h3>2. Merge Lectures</h3>
+                    <p>Combines multiple daily lecture PDFs (e.g., Lecture 01 to Lecture 08) in your custom sequence into a single complete chapter PDF.</p>
+                  </div>
+                  <div class="info-card">
+                    <h3>3. Split &amp; Extract</h3>
+                    <p>Pulls specific page ranges (like <code>1-5, 8, 12-15</code>), odd pages, or even pages out of a large textbook or notes PDF into a new lightweight file.</p>
+                  </div>
+                  <div class="info-card">
+                    <h3>4. Organize &amp; Rotate</h3>
+                    <p>Lets you visually rotate sideways or upside-down pages by 90°, reorder slides left/right, or delete blank/unwanted pages.</p>
+                  </div>
+                  <div class="info-card">
+                    <h3>5. Images to PDF</h3>
+                    <p>Turns phone photos of handwritten notebooks, whiteboards, or slide screenshots into a clean A4 PDF—with optional Smart Ink Saver filtering.</p>
+                  </div>
+                  <div class="info-card">
+                    <h3>6. PDF to Images (.ZIP)</h3>
+                    <p>Renders selected PDF slides as high-resolution 2x PNG or JPG image files bundled neatly inside a single downloadable ZIP archive.</p>
+                  </div>
+                </div>
+              </div>
+
+              <div>
+                <div class="info-section-title">
+                  <svg class="ico" viewBox="0 0 24 24"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+                  <span>Important Precautions &amp; Best Practices</span>
+                </div>
+                <div class="precaution-box">
+                  <div class="precaution-item">
+                    <strong>1. Always Check Step 4 (1st Page Preview) First:</strong> Before converting a 60+ page lecture PDF, check the 1st A4 Page Preview in Step 4. If thin diagrams look too light, click <em>← Previous Step</em> and increase <strong>Outline Strength</strong> to <code>65–75</code>. If background textures appear, lower it to <code>35–45</code>.
+                  </div>
+                  <div class="precaution-item">
+                    <strong>2. When to Use Grayscale or Original Instead of Smart Ink Saver:</strong> Smart Ink Saver is engineered for text, formulas, line diagrams, and dark-background slides. If a PDF contains full-page real-world photographs (like biology microscopy or geography maps), <strong>Grayscale</strong> or <strong>Original</strong> mode preserves smooth photo shading better.
+                  </div>
+                  <div class="precaution-item">
+                    <strong>3. Password-Protected PDFs:</strong> Encrypted or password-locked PDFs cannot be read by the renderer. Please remove the password before uploading.
+                  </div>
+                  <div class="precaution-item">
+                    <strong>4. Keep the Tab Open During Large Conversions:</strong> High-resolution image processing for 50–150 slides takes a few seconds in memory. Avoid closing or refreshing the browser tab while the status bar says <em>Processing slide X of Y</em>.
+                  </div>
+                  <div class="precaution-item">
+                    <strong>5. Printer Settings Recommendation:</strong> When printing your generated Concentric PDF on paper, set your printer scale to <strong>"Fit to Printable Area"</strong> or <strong>"100%"</strong> and select <strong>Black &amp; White</strong> mode for the cleanest, most economical results.
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+      </main>
+    </div>
+
+    <!-- Mobile Adaptive Bottom Bar -->
+    <nav class="adw-bottom-bar" aria-label="Mobile Tool Switcher">
+      <button type="button" class="bottom-tab active tool-tab" data-tool="notes" data-title="Process Notes — Smart Ink Saver">
+        <svg class="ico" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/></svg>
+        <small>Notes</small>
+      </button>
+      <button type="button" class="bottom-tab tool-tab" data-tool="merge" data-title="Merge Lectures — Chapter Builder">
+        <svg class="ico" viewBox="0 0 24 24"><path d="M8 6h13M8 12h13M8 18h13"/></svg>
+        <small>Merge</small>
+      </button>
+      <button type="button" class="bottom-tab tool-tab" data-tool="split" data-title="Split & Extract PDF Pages">
+        <svg class="ico" viewBox="0 0 24 24"><circle cx="6" cy="6" r="3"/><circle cx="6" cy="18" r="3"/><line x1="20" y1="4" x2="8.12" y2="15.88"/></svg>
+        <small>Split</small>
+      </button>
+      <button type="button" class="bottom-tab tool-tab" data-tool="organize" data-title="Organize, Rotate & Delete Pages">
+        <svg class="ico" viewBox="0 0 24 24"><path d="M21 2v6h-6"/><path d="M3 12a9 9 0 0 1 15-6.7L21 8"/></svg>
+        <small>Organize</small>
+      </button>
+      <button type="button" class="bottom-tab tool-tab" data-tool="img2pdf" data-title="Images to PDF Converter">
+        <svg class="ico" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="3"/></svg>
+        <small>Img→PDF</small>
+      </button>
+      <button type="button" class="bottom-tab tool-tab" data-tool="pdf2img" data-title="Export PDF Slides to Images (ZIP)">
+        <svg class="ico" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/></svg>
+        <small>PDF→Img</small>
+      </button>
+      <button type="button" class="bottom-tab tool-tab" data-tool="info" data-title="Info, How It Works & Precautions">
+        <svg class="ico" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+        <small>Info</small>
+      </button>
+    </nav>
+  </div>
+
+  <!-- About Dialog -->
+  <div class="adw-dialog-backdrop" id="aboutModal" hidden>
+    <div class="adw-about-dialog" role="dialog" aria-modal="true" aria-labelledby="aboutAppName">
+      <button type="button" class="adw-dialog-close" id="closeAboutBtn" aria-label="Close">×</button>
+      <div class="brand-mark" style="width:52px;height:52px;margin:0 auto 10px;border-radius:12px;">
+        <svg width="30" height="30" viewBox="0 0 128 128" fill="none">
+          <ellipse cx="64" cy="64" rx="46" ry="24" transform="rotate(-32 64 64)" stroke="#3584e4" stroke-width="10"/>
+          <ellipse cx="64" cy="64" rx="46" ry="24" transform="rotate(32 64 64)" stroke="#9a9996" stroke-width="9"/>
+          <circle cx="64" cy="64" r="12" fill="#f6f5f4"/>
+        </svg>
+      </div>
+      <h2 id="aboutAppName" style="font-size:17px;">Concentric Notes Converter</h2>
+      <span class="about-version">2.3.0 (Modern UI Edition)</span>
+      <p class="about-desc">
+        Smarter notes. Less unnecessary ink. More affordable studying.<br>
+        Step-by-step student PDF &amp; V1.2 Smart Ink Saver suite.
+      </p>
+      <div class="about-rows">
+        <div class="about-row">
+          <span>Created by</span>
+          <strong>Avadhesh Pingoriya</strong>
+        </div>
+        <div class="about-row">
+          <span>Core Engine</span>
+          <span>V1.2 Smart Ink Saver</span>
+        </div>
+        <div class="about-row">
+          <span>Interface</span>
+          <span>Modern Step-by-Step UI</span>
+        </div>
+        <div class="about-row">
+          <span>License</span>
+          <span>The Unlicense (Public Domain)</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+// Concentric Notes Converter V2.3 (Modern UI Edition)
+// Created by Avadhesh Pingoriya
+// Step-by-Step Wizard with full backward/forward navigation + untouched V1.2 Smart Ink Saver
+
+let backendAvailable = false;
+const VERCEL_SAFE_BYTES = 4 * 1024 * 1024;
+
+window.addEventListener("DOMContentLoaded", async () => {
+  if (window.pdfjsLib) {
+    window.pdfjsLib.GlobalWorkerOptions.workerSrc =
+      "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js";
+  }
+
+  try {
+    const res = await fetch("/api/health", { method: "GET" });
+    if (res.ok) backendAvailable = true;
+  } catch (_) {
+    backendAvailable = false;
+  }
+});
+
+// ==================== THEME & ABOUT DIALOG ====================
+const themeToggle = document.getElementById("themeToggle");
+if (themeToggle) {
+  themeToggle.addEventListener("click", () => {
+    const html = document.documentElement;
+    const next = html.getAttribute("data-theme") === "light" ? "dark" : "light";
+    html.setAttribute("data-theme", next);
+  });
+}
+
+const aboutModal = document.getElementById("aboutModal");
+if (aboutModal) {
+  const openBtn = document.getElementById("openAboutBtn");
+  const openSide = document.getElementById("openAboutSidebar");
+  const closeBtn = document.getElementById("closeAboutBtn");
+  if (openBtn) openBtn.onclick = () => (aboutModal.hidden = false);
+  if (openSide) openSide.onclick = () => (aboutModal.hidden = false);
+  if (closeBtn) closeBtn.onclick = () => (aboutModal.hidden = true);
+  aboutModal.addEventListener("click", e => {
+    if (e.target === aboutModal) aboutModal.hidden = true;
+  });
+}
+
+// ==================== TOOL SWITCHER ====================
+function switchTool(tool, title) {
+  document.querySelectorAll(".tool-tab").forEach(t => {
+    t.classList.toggle("active", t.dataset.tool === tool);
+  });
+  document.querySelectorAll(".tool-panel").forEach(p => {
+    p.classList.toggle("active", p.id === tool + "Tool");
+  });
+  const crumb = document.getElementById("crumb");
+  if (crumb) crumb.textContent = title || "Process Notes";
+}
+
+document.querySelectorAll(".tool-tab").forEach(tab => {
+  tab.addEventListener("click", () => {
+    switchTool(tab.dataset.tool, tab.dataset.title);
+  });
+});
+
+const brandHome = document.getElementById("brandHomeLink");
+if (brandHome) {
+  brandHome.addEventListener("click", e => {
+    e.preventDefault();
+    switchTool("notes", "Process Notes — Smart Ink Saver");
+  });
+}
+
+const openInfoTopBtn = document.getElementById("openInfoTopBtn");
+if (openInfoTopBtn) {
+  openInfoTopBtn.addEventListener("click", () => {
+    switchTool("info", "Info, How It Works & Precautions");
+  });
+}
+
+// ==================== GENERIC STEP-BY-STEP WIZARD HELPER ====================
+function setWizardStep(toolPrefix, stepNum, maxUnlockedStep, onEnterStep) {
+  const panel = document.getElementById(toolPrefix + "Tool");
+  if (!panel) return;
+
+  panel.querySelectorAll(".wizard-step").forEach(s => {
+    s.classList.toggle("active", Number(s.dataset.step) === stepNum);
+  });
+
+  panel.querySelectorAll(".step-pill").forEach(pill => {
+    const pStep = Number(pill.dataset.step);
+    pill.disabled = pStep > maxUnlockedStep;
+    pill.classList.toggle("active", pStep === stepNum);
+    pill.classList.toggle("done", pStep < stepNum && pStep <= maxUnlockedStep);
+  });
+
+  if (typeof onEnterStep === "function") onEnterStep(stepNum);
+}
+
+// ==================== SHARED UTILITIES ====================
+function parsePageSpec(spec, total) {
+  if (!spec || !spec.trim()) return Array.from({ length: total }, (_, i) => i + 1);
+  const pages = new Set();
+  spec.replace(/\s+/g, "").split(",").forEach(part => {
+    if (!part) return;
+    if (part.includes("-")) {
+      let [a, b] = part.split("-", 2).map(Number);
+      if (!isNaN(a) && !isNaN(b)) {
+        if (a > b) [a, b] = [b, a];
+        for (let p = Math.max(1, a); p <= Math.min(total, b); p++) pages.add(p);
+      }
+    } else {
+      const p = Number(part);
+      if (!isNaN(p) && p >= 1 && p <= total) pages.add(p);
+    }
+  });
+  return [...pages].sort((a, b) => a - b);
+}
+
+function downloadBlob(blob, filename) {
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = filename;
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+  setTimeout(() => URL.revokeObjectURL(url), 2000);
+}
+
+function escapeHtml(value) {
+  return String(value).replace(/[&<>"']/g, c => ({
+    "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#039;"
+  }[c]));
+}
+
+function formatFileSize(bytes) {
+  if (bytes < 1024 * 1024) return `${Math.max(1, Math.round(bytes / 1024))} KB`;
+  return `${(bytes / 1024 / 1024).toFixed(2)} MB`;
+}
+
+// ==================== EXACT V1.2 SMART INK SAVER PORT (JS CANVAS) ====================
+function isDarkSlideJS(gray, w, h) {
+  const band = Math.max(1, Math.floor(Math.min(h, w) / 18));
+  let borderSum = 0;
+  let borderCount = 0;
+
+  for (let y = 0; y < band; y++) {
+    const rowTop = y * w;
+    const rowBot = (h - 1 - y) * w;
+    for (let x = 0; x < w; x++) {
+      borderSum += gray[rowTop + x] + gray[rowBot + x];
+      borderCount += 2;
+    }
+  }
+  for (let y = 0; y < h; y++) {
+    const row = y * w;
+    for (let x = 0; x < band; x++) {
+      borderSum += gray[row + x] + gray[row + (w - 1 - x)];
+      borderCount += 2;
+    }
+  }
+  let totalSum = 0;
+  const totalPixels = w * h;
+  for (let i = 0; i < totalPixels; i++) totalSum += gray[i];
+
+  return (borderSum / borderCount) < 135 || (totalSum / totalPixels) < 115;
+}
+
+function applyCLAHE(gray, w, h, clipLimit = 1.25, tilesX = 8, tilesY = 8) {
+  const tileW = Math.ceil(w / tilesX);
+  const tileH = Math.ceil(h / tilesY);
+  const luts = new Uint8Array(tilesX * tilesY * 256);
+
+  for (let ty = 0; ty < tilesY; ty++) {
+    const y0 = ty * tileH;
+    const y1 = Math.min(h, y0 + tileH);
+    for (let tx = 0; tx < tilesX; tx++) {
+      const x0 = tx * tileW;
+      const x1 = Math.min(w, x0 + tileW);
+      const area = Math.max(1, (x1 - x0) * (y1 - y0));
+      const limit = Math.max(1, Math.floor((clipLimit * area) / 256));
+
+      const hist = new Int32Array(256);
+      for (let y = y0; y < y1; y++) {
+        const row = y * w;
+        for (let x = x0; x < x1; x++) hist[gray[row + x]]++;
+      }
+
+      let excess = 0;
+      for (let i = 0; i < 256; i++) {
+        if (hist[i] > limit) {
+          excess += hist[i] - limit;
+          hist[i] = limit;
+        }
+      }
+      const redist = Math.floor(excess / 256);
+      const rem = excess % 256;
+      for (let i = 0; i < 256; i++) {
+        hist[i] += redist + (i < rem ? 1 : 0);
+      }
+
+      const lutOffset = (ty * tilesX + tx) * 256;
+      let cdf = 0;
+      const scale = 255 / area;
+      for (let i = 0; i < 256; i++) {
+        cdf += hist[i];
+        luts[lutOffset + i] = Math.min(255, Math.round(cdf * scale));
+      }
+    }
+  }
+
+  const out = new Uint8Array(w * h);
+  for (let y = 0; y < h; y++) {
+    const fy = (y + 0.5) / tileH - 0.5;
+    const ty0 = Math.max(0, Math.min(tilesY - 1, Math.floor(fy)));
+    const ty1 = Math.min(tilesY - 1, ty0 + 1);
+    const wy = Math.max(0, Math.min(1, fy - ty0));
+
+    for (let x = 0; x < w; x++) {
+      const fx = (x + 0.5) / tileW - 0.5;
+      const tx0 = Math.max(0, Math.min(tilesX - 1, Math.floor(fx)));
+      const tx1 = Math.min(tilesX - 1, tx0 + 1);
+      const wx = Math.max(0, Math.min(1, fx - tx0));
+
+      const v = gray[y * w + x];
+      const v00 = luts[(ty0 * tilesX + tx0) * 256 + v];
+      const v10 = luts[(ty0 * tilesX + tx1) * 256 + v];
+      const v01 = luts[(ty1 * tilesX + tx0) * 256 + v];
+      const v11 = luts[(ty1 * tilesX + tx1) * 256 + v];
+
+      const top = v00 * (1 - wx) + v10 * wx;
+      const bot = v01 * (1 - wx) + v11 * wx;
+      out[y * w + x] = Math.round(top * (1 - wy) + bot * wy);
+    }
+  }
+  return out;
+}
+
+function gaussianBlur3x3(src, w, h) {
+  const out = new Uint8Array(w * h);
+  for (let y = 0; y < h; y++) {
+    const ym = Math.max(0, y - 1) * w;
+    const yc = y * w;
+    const yp = Math.min(h - 1, y + 1) * w;
+    for (let x = 0; x < w; x++) {
+      const xm = Math.max(0, x - 1);
+      const xp = Math.min(w - 1, x + 1);
+      const sum =
+        src[ym + xm] + (src[ym + x] << 1) + src[ym + xp] +
+        (src[yc + xm] << 1) + (src[yc + x] << 2) + (src[yc + xp] << 1) +
+        src[yp + xm] + (src[yp + x] << 1) + src[yp + xp];
+      out[yc + x] = (sum + 8) >> 4;
+    }
+  }
+  return out;
+}
+
+function adaptiveThresholdV4(smooth, w, h, strength) {
+  let cValue = Math.round(20 - strength * 0.127);
+  cValue = Math.max(6, Math.min(20, cValue));
+
+  const radius = 20;
+  const sigma = 6.5;
+  const kernel = new Float32Array(41);
+  let kSum = 0;
+  for (let i = -radius; i <= radius; i++) {
+    const wgt = Math.exp(-(i * i) / (2 * sigma * sigma));
+    kernel[i + radius] = wgt;
+    kSum += wgt;
+  }
+  for (let i = 0; i < 41; i++) kernel[i] /= kSum;
+
+  const temp = new Float32Array(w * h);
+  for (let y = 0; y < h; y++) {
+    const row = y * w;
+    for (let x = 0; x < w; x++) {
+      let acc = 0;
+      for (let k = -radius; k <= radius; k++) {
+        const xx = Math.max(0, Math.min(w - 1, x + k));
+        acc += smooth[row + xx] * kernel[k + radius];
+      }
+      temp[row + x] = acc;
+    }
+  }
+
+  const result = new Uint8Array(w * h);
+  for (let y = 0; y < h; y++) {
+    const row = y * w;
+    for (let x = 0; x < w; x++) {
+      let acc = 0;
+      for (let k = -radius; k <= radius; k++) {
+        const yy = Math.max(0, Math.min(h - 1, y + k));
+        acc += temp[yy * w + x] * kernel[k + radius];
+      }
+      const thresh = acc - cValue;
+      result[row + x] = smooth[row + x] > thresh ? 255 : 0;
+    }
+  }
+  return result;
+}
+
+function removeIsolatedNoise8CC(result, w, h) {
+  const minArea = Math.max(3, Math.floor(w * h * 0.000002));
+  const visited = new Uint8Array(w * h);
+  const queue = new Int32Array(w * h);
+  const component = [];
+
+  for (let i = 0; i < w * h; i++) {
+    if (result[i] === 0 && !visited[i]) {
+      visited[i] = 1;
+      let head = 0, tail = 0;
+      queue[tail++] = i;
+      component.length = 0;
+
+      while (head < tail) {
+        const curr = queue[head++];
+        component.push(curr);
+        const cy = Math.floor(curr / w);
+        const cx = curr - cy * w;
+
+        for (let dy = -1; dy <= 1; dy++) {
+          const ny = cy + dy;
+          if (ny < 0 || ny >= h) continue;
+          for (let dx = -1; dx <= 1; dx++) {
+            const nx = cx + dx;
+            if (nx < 0 || nx >= w) continue;
+            const ni = ny * w + nx;
+            if (result[ni] === 0 && !visited[ni]) {
+              visited[ni] = 1;
+              queue[tail++] = ni;
+            }
+          }
+        }
+      }
+
+      if (component.length < minArea) {
+        for (let j = 0; j < component.length; j++) {
+          result[component[j]] = 255;
+        }
+      }
+    }
+  }
+  return result;
+}
+
+function processCanvasInPlace(canvas, mode, strength = 55) {
+  if (mode === "original") return canvas;
+  const ctx = canvas.getContext("2d");
+  const w = canvas.width;
+  const h = canvas.height;
+  const imgData = ctx.getImageData(0, 0, w, h);
+  const data = imgData.data;
+  const gray = new Uint8Array(w * h);
+
+  for (let i = 0, p = 0; i < data.length; i += 4, p++) {
+    gray[p] = Math.round(0.299 * data[i] + 0.587 * data[i + 1] + 0.114 * data[i + 2]);
+  }
+
+  let outGray = gray;
+  if (mode === "invert_bw") {
+    outGray = new Uint8Array(w * h);
+    for (let p = 0; p < gray.length; p++) {
+      const inv = 255 - gray[p];
+      outGray[p] = inv > 150 ? 255 : 0;
+    }
+  } else if (mode === "smart") {
+    if (isDarkSlideJS(gray, w, h)) {
+      for (let p = 0; p < gray.length; p++) gray[p] = 255 - gray[p];
+    }
+    const enhanced = applyCLAHE(gray, w, h, 1.25, 8, 8);
+    const smooth = gaussianBlur3x3(enhanced, w, h);
+    const binary = adaptiveThresholdV4(smooth, w, h, strength);
+    outGray = removeIsolatedNoise8CC(binary, w, h);
+  }
+
+  for (let i = 0, p = 0; i < data.length; i += 4, p++) {
+    const v = outGray[p];
+    data[i] = v;
+    data[i + 1] = v;
+    data[i + 2] = v;
+    data[i + 3] = 255;
+  }
+  ctx.putImageData(imgData, 0, 0);
+  return canvas;
+}
+
+async function generateThumbnailsClient(file, scale = 0.34) {
+  const buf = await file.arrayBuffer();
+  const pdfDoc = await window.pdfjsLib.getDocument({ data: buf }).promise;
+  const thumbs = [];
+  for (let i = 1; i <= pdfDoc.numPages; i++) {
+    const page = await pdfDoc.getPage(i);
+    const vp = page.getViewport({ scale });
+    const canvas = document.createElement("canvas");
+    canvas.width = Math.max(1, Math.floor(vp.width));
+    canvas.height = Math.max(1, Math.floor(vp.height));
+    await page.render({ canvasContext: canvas.getContext("2d"), viewport: vp }).promise;
+    thumbs.push({
+      page: i,
+      image: canvas.toDataURL("image/jpeg", 0.68)
+    });
+  }
+  return { pages: pdfDoc.numPages, thumbs };
+}
+
+async function getPreviewData(file) {
+  if (backendAvailable && file.size <= VERCEL_SAFE_BYTES) {
+    try {
+      const fd = new FormData();
+      fd.append("pdf", file);
+      const r = await fetch("/preview", { method: "POST", body: fd });
+      if (r.ok) return await r.json();
+    } catch (_) {}
+  }
+  return await generateThumbnailsClient(file);
+}
+
+// ==================== TOOL 1: PROCESS NOTES (4-STEP WIZARD) ====================
+const pdfInput = document.getElementById("pdf");
+const thumbsContainer = document.getElementById("thumbnails");
+const fileInfo = document.getElementById("fileInfo");
+const pageInfo = document.getElementById("pageInfo");
+const pagesInput = document.getElementById("pages");
+const form = document.getElementById("form");
+const strengthSlider = document.getElementById("strength");
+const strengthValue = document.getElementById("strengthValue");
+
+const notesBackBtn = document.getElementById("notesBackBtn");
+const notesNextBtn = document.getElementById("notesNextBtn");
+const notesGenerateBtn = document.getElementById("notesGenerateBtn");
+const notesFooterStatus = document.getElementById("notesFooterStatus");
+const notesLoadedBanner = document.getElementById("notesLoadedBanner");
+const notesLoadedName = document.getElementById("notesLoadedName");
+const notesContinueStep2Btn = document.getElementById("notesContinueStep2Btn");
+
+const firstPagePreviewImg = document.getElementById("firstPagePreviewImg");
+const firstPageMeta = document.getElementById("firstPageMeta");
+const refreshPreviewBtn = document.getElementById("refreshPreviewBtn");
+
+let notesStep = 1;
+let notesMaxUnlocked = 1;
+let selectedSlides = new Set();
+let totalNotesSlides = 0;
+
+strengthSlider.addEventListener("input", () => {
+  strengthValue.textContent = strengthSlider.value;
+});
+
+function syncNotesWizardFooter() {
+  notesBackBtn.disabled = notesStep === 1;
+  if (notesStep === 1) {
+    notesNextBtn.style.display = "inline-flex";
+    notesGenerateBtn.style.display = "none";
+    notesNextBtn.disabled = totalNotesSlides === 0;
+    notesNextBtn.textContent = "Next: Select Slides →";
+    notesFooterStatus.textContent = totalNotesSlides
+      ? `${totalNotesSlides} pages loaded. Click Next to choose slides.`
+      : "Step 1 of 4 · Upload a lecture PDF to begin";
+  } else if (notesStep === 2) {
+    notesNextBtn.style.display = "inline-flex";
+    notesGenerateBtn.style.display = "none";
+    notesNextBtn.disabled = selectedSlides.size === 0;
+    notesNextBtn.textContent = "Next: Settings →";
+    notesFooterStatus.textContent = `Step 2 of 4 · ${selectedSlides.size} of ${totalNotesSlides} slide${selectedSlides.size === 1 ? "" : "s"} selected`;
+  } else if (notesStep === 3) {
+    notesNextBtn.style.display = "inline-flex";
+    notesGenerateBtn.style.display = "none";
+    notesNextBtn.disabled = false;
+    notesNextBtn.textContent = "Next: Preview 1st Page →";
+    notesFooterStatus.textContent = `Step 3 of 4 · ${selectedSlides.size} slides selected · Configure layout & ink`;
+  } else if (notesStep === 4) {
+    notesNextBtn.style.display = "none";
+    notesGenerateBtn.style.display = "inline-flex";
+    notesFooterStatus.textContent = `Step 4 of 4 · Inspect 1st A4 sheet preview or go back to adjust`;
+  }
+}
+
+function goNotesStep(targetStep) {
+  if (targetStep < 1 || targetStep > notesMaxUnlocked) return;
+  if (targetStep >= 3 && selectedSlides.size === 0) {
+    notesFooterStatus.textContent = "Please select at least 1 slide before continuing.";
+    return;
+  }
+  notesStep = targetStep;
+  setWizardStep("notes", notesStep, notesMaxUnlocked, step => {
+    syncNotesWizardFooter();
+    if (step === 4) {
+      triggerFirstPagePreview();
+    }
+  });
+}
+
+// Stepper pill clicks for Notes
+document.querySelectorAll("#notesTool .step-pill").forEach(pill => {
+  pill.addEventListener("click", () => {
+    const s = Number(pill.dataset.step);
+    if (s <= notesMaxUnlocked) goNotesStep(s);
+  });
+});
+
+notesBackBtn.addEventListener("click", () => {
+  if (notesStep > 1) goNotesStep(notesStep - 1);
+});
+
+notesNextBtn.addEventListener("click", () => {
+  if (notesStep === 1 && totalNotesSlides > 0) {
+    notesMaxUnlocked = Math.max(notesMaxUnlocked, 2);
+    goNotesStep(2);
+  } else if (notesStep === 2 && selectedSlides.size > 0) {
+    notesMaxUnlocked = Math.max(notesMaxUnlocked, 3);
+    goNotesStep(3);
+  } else if (notesStep === 3) {
+    notesMaxUnlocked = Math.max(notesMaxUnlocked, 4);
+    goNotesStep(4);
+  }
+});
+
+if (notesContinueStep2Btn) {
+  notesContinueStep2Btn.addEventListener("click", () => goNotesStep(2));
+}
+
+function updateNotesStatsChips() {
+  const checkedLayout = document.querySelector('input[name="slides_per_page"]:checked');
+  const perSheet = checkedLayout ? Number(checkedLayout.value) : 3;
+  const estSheets = selectedSlides.size ? Math.ceil(selectedSlides.size / perSheet) : 0;
+  const chipSel = document.getElementById("chipSelectedCount");
+  const chipSheets = document.getElementById("chipEstSheets");
+  const chipStep3Summary = document.getElementById("chipStep3Summary");
+  if (chipSel) chipSel.innerHTML = `Selected: <strong>${selectedSlides.size} / ${totalNotesSlides} slides</strong>`;
+  if (chipSheets) chipSheets.innerHTML = `Estimated Output: <strong>${estSheets} A4 sheet${estSheets === 1 ? "" : "s"}</strong> (${perSheet} per page)`;
+  if (chipStep3Summary) chipStep3Summary.innerHTML = `<strong>${selectedSlides.size} slides</strong> → <strong>${estSheets} A4 page${estSheets === 1 ? "" : "s"}</strong>`;
+}
+
+document.querySelectorAll('input[name="slides_per_page"]').forEach(radio => {
+  radio.addEventListener("change", updateNotesStatsChips);
+});
+
+function updateNotesSelectionUI() {
+  thumbsContainer.querySelectorAll(".thumb").forEach(el => {
+    const p = Number(el.dataset.page);
+    const active = selectedSlides.has(p);
+    el.classList.toggle("active", active);
+    el.querySelector(".check").textContent = active ? "✓" : "";
+  });
+  pagesInput.value = [...selectedSlides].sort((a, b) => a - b).join(",");
+  pageInfo.textContent = `${selectedSlides.size} of ${totalNotesSlides} slide${selectedSlides.size === 1 ? "" : "s"} selected`;
+  updateNotesStatsChips();
+  syncNotesWizardFooter();
+}
+
+pdfInput.addEventListener("change", async () => {
+  const file = pdfInput.files[0];
+  if (!file) return;
+  fileInfo.textContent = `Loading ${file.name} (${formatFileSize(file.size)})…`;
+  notesFooterStatus.textContent = "Generating slide thumbnails…";
+  thumbsContainer.innerHTML = "";
+  selectedSlides.clear();
+
+  try {
+    const d = await getPreviewData(file);
+    totalNotesSlides = d.pages;
+    d.thumbs.forEach(t => {
+      selectedSlides.add(t.page);
+      const el = document.createElement("div");
+      el.className = "thumb active";
+      el.dataset.page = t.page;
+      el.innerHTML = `<div class="check">✓</div><img src="${t.image}" alt="Slide ${t.page}"><div class="num">Slide ${t.page}</div>`;
+      el.onclick = () => {
+        selectedSlides.has(t.page) ? selectedSlides.delete(t.page) : selectedSlides.add(t.page);
+        updateNotesSelectionUI();
+      };
+      thumbsContainer.appendChild(el);
+    });
+    fileInfo.textContent = `${file.name} · ${formatFileSize(file.size)} (${totalNotesSlides} pages)`;
+    if (notesLoadedBanner) {
+      notesLoadedBanner.hidden = false;
+      notesLoadedName.textContent = `${file.name} (${totalNotesSlides} slides)`;
+    }
+    notesMaxUnlocked = 4;
+    updateNotesSelectionUI();
+    goNotesStep(2);
+  } catch (err) {
+    fileInfo.textContent = "Error: " + err.message;
+    notesFooterStatus.textContent = "Preview failed: " + err.message;
+  }
+});
+
+const mainDropzone = document.getElementById("dropzone");
+if (mainDropzone) {
+  ["dragenter", "dragover"].forEach(ev => mainDropzone.addEventListener(ev, e => {
+    e.preventDefault();
+    mainDropzone.classList.add("dragging");
+  }));
+  ["dragleave", "drop"].forEach(ev => mainDropzone.addEventListener(ev, e => {
+    e.preventDefault();
+    mainDropzone.classList.remove("dragging");
+  }));
+  mainDropzone.addEventListener("drop", e => {
+    const f = [...e.dataTransfer.files].find(x => x.type === "application/pdf" || x.name.toLowerCase().endsWith(".pdf"));
+    if (!f) return;
+    const dt = new DataTransfer();
+    dt.items.add(f);
+    pdfInput.files = dt.files;
+    pdfInput.dispatchEvent(new Event("change", { bubbles: true }));
+  });
+}
+
+document.getElementById("all").onclick = () => {
+  for (let i = 1; i <= totalNotesSlides; i++) selectedSlides.add(i);
+  updateNotesSelectionUI();
+};
+document.getElementById("none").onclick = () => {
+  selectedSlides.clear();
+  updateNotesSelectionUI();
+};
+document.getElementById("invertSel").onclick = () => {
+  for (let i = 1; i <= totalNotesSlides; i++) {
+    selectedSlides.has(i) ? selectedSlides.delete(i) : selectedSlides.add(i);
+  }
+  updateNotesSelectionUI();
+};
+document.getElementById("applyRangeBtn").onclick = () => {
+  const spec = document.getElementById("rangeQuickInput").value;
+  if (!totalNotesSlides) return;
+  selectedSlides = new Set(parsePageSpec(spec, totalNotesSlides));
+  updateNotesSelectionUI();
+};
+
+// ---------- RENDER ONLY THE 1ST OUTPUT A4 SHEET ----------
+async function renderFirstSheetClientSide(file, formData) {
+  const buf = await file.arrayBuffer();
+  const pdfDoc = await window.pdfjsLib.getDocument({ data: buf }).promise;
+
+  const slidesPerPage = Number(formData.get("slides_per_page") || 3);
+  const mode = formData.get("mode") || "smart";
+  const strength = Number(formData.get("strength") || 55);
+  const orientation = formData.get("orientation") || "portrait";
+  const marginPreset = formData.get("margin") || "normal";
+  const drawBorder = formData.get("border") === "1";
+  const pageNumbers = formData.get("page_numbers") === "1";
+  const headerText = (formData.get("header_text") || "").trim();
+
+  let [A4_W, A4_H] = orientation === "landscape" ? [842, 595] : [595, 842];
+  const layouts = { 1: [1, 1], 2: [1, 2], 3: [1, 3], 4: [2, 2], 6: [2, 3], 8: [2, 4], 9: [3, 3] };
+  let [cols, rows] = layouts[slidesPerPage] || [1, 3];
+  if (orientation === "landscape" && [2, 3, 6].includes(slidesPerPage)) {
+    [cols, rows] = [rows, cols];
+  }
+
+  const margin = marginPreset === "compact" ? 8 : (marginPreset === "wide" ? 24 : 14);
+  const gap = marginPreset === "compact" ? 5 : (marginPreset === "wide" ? 10 : 7);
+  const topExtra = headerText ? 16 : 0;
+  const bottomExtra = pageNumbers ? 16 : 0;
+
+  const cellW = (A4_W - 2 * margin - (cols - 1) * gap) / cols;
+  const cellH = (A4_H - 2 * margin - topExtra - bottomExtra - (rows - 1) * gap) / rows;
+  const perSheet = cols * rows;
+
+  const sortedPages = [...selectedSlides].sort((a, b) => a - b);
+  const totalSheets = Math.ceil(sortedPages.length / perSheet);
+  const firstSheetPages = sortedPages.slice(0, perSheet);
+
+  const scaleFactor = 1.5;
+  const sheetCanvas = document.createElement("canvas");
+  sheetCanvas.width = Math.round(A4_W * scaleFactor);
+  sheetCanvas.height = Math.round(A4_H * scaleFactor);
+  const ctx = sheetCanvas.getContext("2d");
+
+  ctx.fillStyle = "#ffffff";
+  ctx.fillRect(0, 0, sheetCanvas.width, sheetCanvas.height);
+
+  for (let idx = 0; idx < firstSheetPages.length; idx++) {
+    const pageNum = firstSheetPages[idx];
+    const srcPage = await pdfDoc.getPage(pageNum);
+    const vp = srcPage.getViewport({ scale: 1.7 });
+    const slideCanvas = document.createElement("canvas");
+    slideCanvas.width = Math.floor(vp.width);
+    slideCanvas.height = Math.floor(vp.height);
+    await srcPage.render({ canvasContext: slideCanvas.getContext("2d"), viewport: vp }).promise;
+
+    processCanvasInPlace(slideCanvas, mode, strength);
+
+    const row = Math.floor(idx / cols);
+    const col = idx % cols;
+    const x0 = margin + col * (cellW + gap);
+    const y0 = margin + topExtra + row * (cellH + gap);
+
+    const iw = slideCanvas.width;
+    const ih = slideCanvas.height;
+    const sc = Math.min(cellW / iw, cellH / ih);
+    const dw = iw * sc;
+    const dh = ih * sc;
+    const x = (x0 + (cellW - dw) / 2) * scaleFactor;
+    const y = (y0 + (cellH - dh) / 2) * scaleFactor;
+    const rw = dw * scaleFactor;
+    const rh = dh * scaleFactor;
+
+    ctx.drawImage(slideCanvas, x, y, rw, rh);
+
+    if (drawBorder) {
+      ctx.strokeStyle = "#bfbfc7";
+      ctx.lineWidth = 1.1;
+      ctx.strokeRect(x, y, rw, rh);
+    }
+  }
+
+  ctx.fillStyle = "#595966";
+  ctx.font = `${Math.round(8.5 * scaleFactor)}px sans-serif`;
+  if (headerText) {
+    ctx.fillText(headerText, margin * scaleFactor, (margin + 9) * scaleFactor);
+  }
+  if (pageNumbers) {
+    const label = `Page 1 of ${totalSheets}`;
+    const tw = ctx.measureText(label).width;
+    ctx.fillText(label, (sheetCanvas.width - tw) / 2, (A4_H - margin + 2) * scaleFactor);
+  }
+
+  return {
+    preview_image: sheetCanvas.toDataURL("image/png"),
+    total_sheets: totalSheets,
+    slides_shown: firstSheetPages.length
+  };
+}
+
+async function triggerFirstPagePreview() {
+  const file = pdfInput.files[0];
+  if (!file || !selectedSlides.size) return;
+
+  if (refreshPreviewBtn) refreshPreviewBtn.disabled = true;
+  firstPageMeta.textContent = "Rendering 1st A4 page preview with V1.2 Smart Ink Saver…";
+
+  const fd = new FormData(form);
+  try {
+    let data;
+    if (backendAvailable && file.size <= VERCEL_SAFE_BYTES) {
+      const r = await fetch("/preview-sheet", { method: "POST", body: fd });
+      if (!r.ok) throw new Error("Preview failed");
+      data = await r.json();
+    } else {
+      data = await renderFirstSheetClientSide(file, fd);
+    }
+    firstPagePreviewImg.src = data.preview_image;
+    firstPageMeta.textContent = `Page 1 of ${data.total_sheets} total A4 sheet${data.total_sheets === 1 ? "" : "s"} (${data.slides_shown} slide${data.slides_shown === 1 ? "" : "s"} on this sheet · ${selectedSlides.size} slides total)`;
+  } catch (err) {
+    firstPageMeta.textContent = "Preview error: " + err.message;
+  } finally {
+    if (refreshPreviewBtn) refreshPreviewBtn.disabled = false;
+  }
+}
+
+if (refreshPreviewBtn) refreshPreviewBtn.onclick = triggerFirstPagePreview;
+
+async function processNotesClientSide(file, formData) {
+  const { PDFDocument, rgb, StandardFonts } = window.PDFLib;
+  const buf = await file.arrayBuffer();
+  const pdfDoc = await window.pdfjsLib.getDocument({ data: buf }).promise;
+
+  const slidesPerPage = Number(formData.get("slides_per_page") || 3);
+  const mode = formData.get("mode") || "smart";
+  const strength = Number(formData.get("strength") || 55);
+  const orientation = formData.get("orientation") || "portrait";
+  const marginPreset = formData.get("margin") || "normal";
+  const drawBorder = formData.get("border") === "1";
+  const pageNumbers = formData.get("page_numbers") === "1";
+  const headerText = (formData.get("header_text") || "").trim();
+
+  let [A4_W, A4_H] = orientation === "landscape" ? [842, 595] : [595, 842];
+  const layouts = { 1: [1, 1], 2: [1, 2], 3: [1, 3], 4: [2, 2], 6: [2, 3], 8: [2, 4], 9: [3, 3] };
+  let [cols, rows] = layouts[slidesPerPage] || [1, 3];
+  if (orientation === "landscape" && [2, 3, 6].includes(slidesPerPage)) {
+    [cols, rows] = [rows, cols];
+  }
+
+  const margin = marginPreset === "compact" ? 8 : (marginPreset === "wide" ? 24 : 14);
+  const gap = marginPreset === "compact" ? 5 : (marginPreset === "wide" ? 10 : 7);
+  const topExtra = headerText ? 16 : 0;
+  const bottomExtra = pageNumbers ? 16 : 0;
+
+  const cellW = (A4_W - 2 * margin - (cols - 1) * gap) / cols;
+  const cellH = (A4_H - 2 * margin - topExtra - bottomExtra - (rows - 1) * gap) / rows;
+  const perSheet = cols * rows;
+
+  const outPdf = await PDFDocument.create();
+  outPdf.setTitle(headerText || "Concentric Smart Notes");
+  outPdf.setAuthor("Avadhesh Pingoriya");
+  outPdf.setCreator("Concentric Notes Converter V2.3 by Avadhesh Pingoriya");
+
+  const font = await outPdf.embedFont(StandardFonts.Helvetica);
+  const sortedPages = [...selectedSlides].sort((a, b) => a - b);
+  let outPage = null;
+
+  for (let idx = 0; idx < sortedPages.length; idx++) {
+    const pageNum = sortedPages[idx];
+    const slot = idx % perSheet;
+    if (slot === 0) {
+      outPage = outPdf.addPage([A4_W, A4_H]);
+    }
+    notesFooterStatus.textContent = `Processing slide ${idx + 1} of ${sortedPages.length}…`;
+
+    const srcPage = await pdfDoc.getPage(pageNum);
+    const vp = srcPage.getViewport({ scale: 1.7 });
+    const canvas = document.createElement("canvas");
+    canvas.width = Math.floor(vp.width);
+    canvas.height = Math.floor(vp.height);
+    await srcPage.render({ canvasContext: canvas.getContext("2d"), viewport: vp }).promise;
+
+    processCanvasInPlace(canvas, mode, strength);
+    const dataUrl = canvas.toDataURL("image/png");
+    const embeddedImg = await outPdf.embedPng(dataUrl);
+
+    const row = Math.floor(slot / cols);
+    const col = slot % cols;
+    const x0 = margin + col * (cellW + gap);
+    const y0Top = margin + topExtra + row * (cellH + gap);
+
+    const iw = canvas.width;
+    const ih = canvas.height;
+    const scale = Math.min(cellW / iw, cellH / ih);
+    const dw = iw * scale;
+    const dh = ih * scale;
+    const x = x0 + (cellW - dw) / 2;
+    const yFromTop = y0Top + (cellH - dh) / 2;
+    const pdfY = A4_H - yFromTop - dh;
+
+    outPage.drawImage(embeddedImg, { x, y: pdfY, width: dw, height: dh });
+    if (drawBorder) {
+      outPage.drawRectangle({
+        x, y: pdfY, width: dw, height: dh,
+        borderColor: rgb(0.75, 0.75, 0.78),
+        borderWidth: 0.6
+      });
+    }
+  }
+
+  const pagesList = outPdf.getPages();
+  pagesList.forEach((p, i) => {
+    if (headerText) {
+      p.drawText(headerText, {
+        x: margin, y: A4_H - margin - 8, size: 8.5, font, color: rgb(0.35, 0.35, 0.4)
+      });
+    }
+    if (pageNumbers) {
+      const lbl = `Page ${i + 1} of ${pagesList.length}`;
+      const tw = font.widthOfTextAtSize(lbl, 8.5);
+      p.drawText(lbl, {
+        x: (A4_W - tw) / 2, y: margin - 2, size: 8.5, font, color: rgb(0.35, 0.35, 0.4)
+      });
+    }
+  });
+
+  const pdfBytes = await outPdf.save();
+  return new Blob([pdfBytes], { type: "application/pdf" });
+}
+
+form.addEventListener("submit", async e => {
+  e.preventDefault();
+  const file = pdfInput.files[0];
+  if (!file || !selectedSlides.size) return;
+
+  notesGenerateBtn.disabled = true;
+  notesFooterStatus.textContent = "Generating full printable notes PDF…";
+
+  const fd = new FormData(form);
+  const headerName = (document.getElementById("headerText").value || "").trim();
+  const outFilename = headerName
+    ? `${headerName.replace(/[\\/:*?"<>|]/g, "_")}.pdf`
+    : "Concentric_Notes_Output.pdf";
+
+  try {
+    let blob;
+    if (backendAvailable && file.size <= VERCEL_SAFE_BYTES) {
+      const r = await fetch("/process", { method: "POST", body: fd });
+      if (!r.ok) throw new Error("Processing failed");
+      blob = await r.blob();
+    } else {
+      blob = await processNotesClientSide(file, fd);
+    }
+    downloadBlob(blob, outFilename);
+    notesFooterStatus.textContent = "Done! Your printable notes PDF has been downloaded.";
+  } catch (err) {
+    notesFooterStatus.textContent = "Error: " + err.message;
+  } finally {
+    notesGenerateBtn.disabled = false;
+  }
+});
+
+// ==================== TOOL 2: MERGE LECTURES (2-STEP WIZARD) ====================
+const mergeFilesInput = document.getElementById("mergeFiles");
+const mergeList = document.getElementById("mergeList");
+const mergeInfo = document.getElementById("mergeInfo");
+const mergeBackBtn = document.getElementById("mergeBackBtn");
+const mergeNextBtn = document.getElementById("mergeNextBtn");
+const mergeButton = document.getElementById("mergeButton");
+const mergeStatus = document.getElementById("mergeStatus");
+const chapterName = document.getElementById("chapterName");
+let mergeFiles = [];
+let mergeStep = 1;
+
+function goMergeStep(step) {
+  mergeStep = step;
+  const maxUnlocked = mergeFiles.length >= 2 ? 2 : 1;
+  setWizardStep("merge", mergeStep, maxUnlocked);
+  mergeBackBtn.disabled = mergeStep === 1;
+  if (mergeStep === 1) {
+    mergeNextBtn.style.display = "inline-flex";
+    mergeButton.style.display = "none";
+    mergeNextBtn.disabled = mergeFiles.length < 2;
+    mergeStatus.textContent = mergeFiles.length
+      ? `${mergeFiles.length} PDF(s) added. Need at least 2 to merge.`
+      : "Step 1 of 2 · Add at least 2 lecture PDFs";
+  } else {
+    mergeNextBtn.style.display = "none";
+    mergeButton.style.display = "inline-flex";
+    mergeStatus.textContent = `Step 2 of 2 · ${mergeFiles.length} PDFs ready to merge`;
+  }
+}
+
+document.querySelectorAll("#mergeTool .step-pill").forEach(p => {
+  p.onclick = () => goMergeStep(Number(p.dataset.step));
+});
+mergeBackBtn.onclick = () => goMergeStep(1);
+mergeNextBtn.onclick = () => { if (mergeFiles.length >= 2) goMergeStep(2); };
+
+function renderMergeList() {
+  const totalBytes = mergeFiles.reduce((acc, f) => acc + f.size, 0);
+  mergeInfo.textContent = mergeFiles.length
+    ? `${mergeFiles.length} PDF${mergeFiles.length === 1 ? "" : "s"} queued · ${formatFileSize(totalBytes)} total`
+    : "Select 2 or more PDF files";
+
+  mergeList.innerHTML = "";
+  mergeFiles.forEach((file, index) => {
+    const item = document.createElement("div");
+    item.className = "merge-item";
+    item.innerHTML = `
+      <div class="lecture-number">${index + 1}</div>
+      <div class="merge-file-name">
+        <b>${escapeHtml(file.name)}</b>
+        <small>${formatFileSize(file.size)}</small>
+      </div>
+      <div class="merge-actions">
+        <button type="button" data-action="up" ${index === 0 ? "disabled" : ""}>↑</button>
+        <button type="button" data-action="down" ${index === mergeFiles.length - 1 ? "disabled" : ""}>↓</button>
+        <button type="button" data-action="remove" class="remove">×</button>
+      </div>`;
+    item.querySelectorAll("button").forEach(btn => {
+      btn.onclick = () => {
+        const act = btn.dataset.action;
+        if (act === "up" && index > 0) [mergeFiles[index - 1], mergeFiles[index]] = [mergeFiles[index], mergeFiles[index - 1]];
+        if (act === "down" && index < mergeFiles.length - 1) [mergeFiles[index + 1], mergeFiles[index]] = [mergeFiles[index], mergeFiles[index + 1]];
+        if (act === "remove") mergeFiles.splice(index, 1);
+        renderMergeList();
+        if (mergeFiles.length < 2 && mergeStep === 2) goMergeStep(1);
+        else goMergeStep(mergeStep);
+      };
+    });
+    mergeList.appendChild(item);
+  });
+}
+
+mergeFilesInput.addEventListener("change", () => {
+  const added = [...mergeFilesInput.files].filter(f => f.type === "application/pdf" || f.name.toLowerCase().endsWith(".pdf"));
+  mergeFiles.push(...added);
+  mergeFilesInput.value = "";
+  renderMergeList();
+  if (mergeFiles.length >= 2) goMergeStep(2);
+  else goMergeStep(1);
+});
+
+document.getElementById("clearMerge").onclick = () => {
+  mergeFiles = [];
+  renderMergeList();
+  goMergeStep(1);
+};
+
+mergeButton.addEventListener("click", async () => {
+  if (mergeFiles.length < 2) return;
+  mergeButton.disabled = true;
+  mergeStatus.textContent = "Merging lectures in order…";
+
+  const totalBytes = mergeFiles.reduce((acc, f) => acc + f.size, 0);
+  const name = chapterName.value.trim()
+    ? `${chapterName.value.trim().replace(/[\\/:*?"<>|]/g, "-")}.pdf`
+    : "Concentric_Full_Chapter.pdf";
+
+  try {
+    let blob;
+    if (backendAvailable && totalBytes <= VERCEL_SAFE_BYTES) {
+      const fd = new FormData();
+      mergeFiles.forEach(f => fd.append("pdfs", f));
+      fd.append("chapter_name", chapterName.value.trim());
+      const r = await fetch("/merge", { method: "POST", body: fd });
+      if (!r.ok) throw new Error("Merge failed");
+      blob = await r.blob();
+    } else {
+      const { PDFDocument } = window.PDFLib;
+      const mergedPdf = await PDFDocument.create();
+      mergedPdf.setAuthor("Avadhesh Pingoriya");
+      for (const f of mergeFiles) {
+        const srcDoc = await PDFDocument.load(await f.arrayBuffer());
+        const copied = await mergedPdf.copyPages(srcDoc, srcDoc.getPageIndices());
+        copied.forEach(p => mergedPdf.addPage(p));
+      }
+      blob = new Blob([await mergedPdf.save()], { type: "application/pdf" });
+    }
+    downloadBlob(blob, name);
+    mergeStatus.textContent = "Done! Merged PDF downloaded.";
+  } catch (err) {
+    mergeStatus.textContent = "Error: " + err.message;
+  } finally {
+    mergeButton.disabled = false;
+  }
+});
+
+// ==================== TOOL 3: SPLIT & EXTRACT (2-STEP WIZARD) ====================
+const splitInput = document.getElementById("splitPdfInput");
+const splitThumbs = document.getElementById("splitThumbs");
+const splitRangeInput = document.getElementById("splitRangeInput");
+const splitStatus = document.getElementById("splitStatus");
+const splitBackBtn = document.getElementById("splitBackBtn");
+const splitNextBtn = document.getElementById("splitNextBtn");
+const splitRunBtn = document.getElementById("splitRunBtn");
+let splitSelected = new Set();
+let splitTotal = 0;
+let splitStep = 1;
+
+function goSplitStep(step) {
+  splitStep = step;
+  setWizardStep("split", splitStep, splitTotal > 0 ? 2 : 1);
+  splitBackBtn.disabled = splitStep === 1;
+  splitNextBtn.style.display = splitStep === 1 ? "inline-flex" : "none";
+  splitNextBtn.disabled = splitTotal === 0;
+  splitRunBtn.style.display = splitStep === 2 ? "inline-flex" : "none";
+  splitStatus.textContent = splitStep === 1
+    ? "Step 1 of 2 · Upload a PDF to extract pages"
+    : `Step 2 of 2 · ${splitSelected.size} of ${splitTotal} pages selected`;
+}
+
+document.querySelectorAll("#splitTool .step-pill").forEach(p => {
+  p.onclick = () => goSplitStep(Number(p.dataset.step));
+});
+splitBackBtn.onclick = () => goSplitStep(1);
+splitNextBtn.onclick = () => { if (splitTotal > 0) goSplitStep(2); };
+
+function syncSplitUI(updateInput = true) {
+  splitThumbs.querySelectorAll(".thumb").forEach(el => {
+    const p = Number(el.dataset.page);
+    const active = splitSelected.has(p);
+    el.classList.toggle("active", active);
+    el.querySelector(".check").textContent = active ? "✓" : "";
+  });
+  if (updateInput) {
+    splitRangeInput.value = [...splitSelected].sort((a, b) => a - b).join(", ");
+  }
+  if (splitStep === 2) {
+    splitStatus.textContent = `Step 2 of 2 · ${splitSelected.size} of ${splitTotal} pages selected`;
+  }
+}
+
+splitInput.addEventListener("change", async () => {
+  const file = splitInput.files[0];
+  if (!file) return;
+  document.getElementById("splitFileInfo").textContent = `Loading ${file.name}…`;
+  splitThumbs.innerHTML = "";
+  splitSelected.clear();
+  try {
+    const d = await getPreviewData(file);
+    splitTotal = d.pages;
+    d.thumbs.forEach(t => {
+      splitSelected.add(t.page);
+      const el = document.createElement("div");
+      el.className = "thumb active";
+      el.dataset.page = t.page;
+      el.innerHTML = `<div class="check">✓</div><img src="${t.image}" alt="Page ${t.page}"><div class="num">Page ${t.page}</div>`;
+      el.onclick = () => {
+        splitSelected.has(t.page) ? splitSelected.delete(t.page) : splitSelected.add(t.page);
+        syncSplitUI(true);
+      };
+      splitThumbs.appendChild(el);
+    });
+    document.getElementById("splitFileInfo").textContent = `${file.name} (${splitTotal} pages)`;
+    syncSplitUI(true);
+    goSplitStep(2);
+  } catch (err) {
+    splitStatus.textContent = "Error: " + err.message;
+  }
+});
+
+splitRangeInput.addEventListener("input", () => {
+  if (!splitTotal) return;
+  splitSelected = new Set(parsePageSpec(splitRangeInput.value, splitTotal));
+  syncSplitUI(false);
+});
+
+document.getElementById("splitSelectAll").onclick = () => {
+  for (let i = 1; i <= splitTotal; i++) splitSelected.add(i);
+  syncSplitUI(true);
+};
+document.getElementById("splitSelectOdd").onclick = () => {
+  splitSelected.clear();
+  for (let i = 1; i <= splitTotal; i += 2) splitSelected.add(i);
+  syncSplitUI(true);
+};
+document.getElementById("splitSelectEven").onclick = () => {
+  splitSelected.clear();
+  for (let i = 2; i <= splitTotal; i += 2) splitSelected.add(i);
+  syncSplitUI(true);
+};
+document.getElementById("splitClear").onclick = () => {
+  splitSelected.clear();
+  syncSplitUI(true);
+};
+
+splitRunBtn.onclick = async () => {
+  const file = splitInput.files[0];
+  if (!file || !splitSelected.size) return;
+  splitRunBtn.disabled = true;
+  splitStatus.textContent = "Extracting selected pages…";
+  const outName = (document.getElementById("splitOutName").value || "Concentric_Extracted").trim();
+
+  try {
+    let blob;
+    const pagesList = [...splitSelected].sort((a, b) => a - b);
+    if (backendAvailable && file.size <= VERCEL_SAFE_BYTES) {
+      const fd = new FormData();
+      fd.append("pdf", file);
+      fd.append("pages", pagesList.join(","));
+      fd.append("output_name", outName);
+      const r = await fetch("/organize", { method: "POST", body: fd });
+      if (!r.ok) throw new Error("Extraction failed");
+      blob = await r.blob();
+    } else {
+      const { PDFDocument } = window.PDFLib;
+      const srcDoc = await PDFDocument.load(await file.arrayBuffer());
+      const outDoc = await PDFDocument.create();
+      outDoc.setAuthor("Avadhesh Pingoriya");
+      const copied = await outDoc.copyPages(srcDoc, pagesList.map(p => p - 1));
+      copied.forEach(p => outDoc.addPage(p));
+      blob = new Blob([await outDoc.save()], { type: "application/pdf" });
+    }
+    downloadBlob(blob, `${outName.replace(/\.pdf$/i, "")}.pdf`);
+    splitStatus.textContent = "Done! Extracted PDF downloaded.";
+  } catch (err) {
+    splitStatus.textContent = "Error: " + err.message;
+  } finally {
+    splitRunBtn.disabled = false;
+  }
+};
+
+// ==================== TOOL 4: ORGANIZE & ROTATE (2-STEP WIZARD) ====================
+const orgInput = document.getElementById("orgPdfInput");
+const orgGrid = document.getElementById("orgGrid");
+const orgStatus = document.getElementById("orgStatus");
+const orgBackBtn = document.getElementById("orgBackBtn");
+const orgNextBtn = document.getElementById("orgNextBtn");
+const orgSaveBtn = document.getElementById("orgSaveBtn");
+let orgPagesOriginal = [];
+let orgPagesState = [];
+let orgStep = 1;
+
+function goOrgStep(step) {
+  orgStep = step;
+  setWizardStep("organize", orgStep, orgPagesOriginal.length > 0 ? 2 : 1);
+  orgBackBtn.disabled = orgStep === 1;
+  orgNextBtn.style.display = orgStep === 1 ? "inline-flex" : "none";
+  orgNextBtn.disabled = orgPagesOriginal.length === 0;
+  orgSaveBtn.style.display = orgStep === 2 ? "inline-flex" : "none";
+  orgStatus.textContent = orgStep === 1
+    ? "Step 1 of 2 · Upload a PDF to rotate or reorder pages"
+    : `Step 2 of 2 · ${orgPagesState.length} pages in document`;
+}
+
+document.querySelectorAll("#organizeTool .step-pill").forEach(p => {
+  p.onclick = () => goOrgStep(Number(p.dataset.step));
+});
+orgBackBtn.onclick = () => goOrgStep(1);
+orgNextBtn.onclick = () => { if (orgPagesOriginal.length > 0) goOrgStep(2); };
+
+function renderOrgGrid() {
+  orgGrid.innerHTML = "";
+  orgPagesState.forEach((item, idx) => {
+    const card = document.createElement("div");
+    card.className = "thumb active";
+    card.innerHTML = `
+      <img src="${item.image}" alt="Page ${item.page}" style="transform: rotate(${item.rotate}deg)">
+      <div class="num">Page ${item.page} ${item.rotate ? `(${item.rotate}°)` : ""}</div>
+      <div class="org-card-actions">
+        <button type="button" data-act="left" ${idx === 0 ? "disabled" : ""}>←</button>
+        <button type="button" data-act="rotL">↺</button>
+        <button type="button" data-act="rotR">↻</button>
+        <button type="button" data-act="right" ${idx === orgPagesState.length - 1 ? "disabled" : ""}>→</button>
+        <button type="button" data-act="del" class="del-btn">×</button>
+      </div>`;
+    card.querySelectorAll("button").forEach(b => {
+      b.onclick = e => {
+        e.stopPropagation();
+        const act = b.dataset.act;
+        if (act === "left" && idx > 0) [orgPagesState[idx - 1], orgPagesState[idx]] = [orgPagesState[idx], orgPagesState[idx - 1]];
+        if (act === "right" && idx < orgPagesState.length - 1) [orgPagesState[idx + 1], orgPagesState[idx]] = [orgPagesState[idx], orgPagesState[idx + 1]];
+        if (act === "rotL") item.rotate = (item.rotate + 270) % 360;
+        if (act === "rotR") item.rotate = (item.rotate + 90) % 360;
+        if (act === "del") orgPagesState.splice(idx, 1);
+        renderOrgGrid();
+        orgStatus.textContent = `Step 2 of 2 · ${orgPagesState.length} pages in document`;
+      };
+    });
+    orgGrid.appendChild(card);
+  });
+}
+
+orgInput.addEventListener("change", async () => {
+  const file = orgInput.files[0];
+  if (!file) return;
+  document.getElementById("orgFileInfo").textContent = `Loading ${file.name}…`;
+  try {
+    const d = await getPreviewData(file);
+    orgPagesOriginal = d.thumbs.map(t => ({ page: t.page, rotate: 0, image: t.image }));
+    orgPagesState = orgPagesOriginal.map(x => ({ ...x }));
+    document.getElementById("orgFileInfo").textContent = `${file.name} (${orgPagesOriginal.length} pages)`;
+    renderOrgGrid();
+    goOrgStep(2);
+  } catch (err) {
+    orgStatus.textContent = "Error: " + err.message;
+  }
+});
+
+document.getElementById("orgRotateAllLeft").onclick = () => {
+  orgPagesState.forEach(p => (p.rotate = (p.rotate + 270) % 360));
+  renderOrgGrid();
+};
+document.getElementById("orgRotateAllRight").onclick = () => {
+  orgPagesState.forEach(p => (p.rotate = (p.rotate + 90) % 360));
+  renderOrgGrid();
+};
+document.getElementById("orgResetBtn").onclick = () => {
+  orgPagesState = orgPagesOriginal.map(x => ({ ...x }));
+  renderOrgGrid();
+};
+
+orgSaveBtn.onclick = async () => {
+  const file = orgInput.files[0];
+  if (!file || !orgPagesState.length) return;
+  orgSaveBtn.disabled = true;
+  orgStatus.textContent = "Saving organized PDF…";
+  try {
+    let blob;
+    if (backendAvailable && file.size <= VERCEL_SAFE_BYTES) {
+      const fd = new FormData();
+      fd.append("pdf", file);
+      fd.append("operations", JSON.stringify(orgPagesState.map(p => ({ page: p.page, rotate: p.rotate }))));
+      const r = await fetch("/organize", { method: "POST", body: fd });
+      if (!r.ok) throw new Error("Failed to save organized PDF");
+      blob = await r.blob();
+    } else {
+      const { PDFDocument, degrees } = window.PDFLib;
+      const srcDoc = await PDFDocument.load(await file.arrayBuffer());
+      const outDoc = await PDFDocument.create();
+      outDoc.setAuthor("Avadhesh Pingoriya");
+      for (const item of orgPagesState) {
+        const [copied] = await outDoc.copyPages(srcDoc, [item.page - 1]);
+        if (item.rotate) {
+          const cur = copied.getRotation().angle || 0;
+          copied.setRotation(degrees((cur + item.rotate) % 360));
+        }
+        outDoc.addPage(copied);
+      }
+      blob = new Blob([await outDoc.save()], { type: "application/pdf" });
+    }
+    downloadBlob(blob, "Concentric_Organized.pdf");
+    orgStatus.textContent = "Done! Organized PDF downloaded.";
+  } catch (err) {
+    orgStatus.textContent = "Error: " + err.message;
+  } finally {
+    orgSaveBtn.disabled = false;
+  }
+};
+
+// ==================== TOOL 5: IMAGES TO PDF (2-STEP WIZARD) ====================
+const imgFilesInput = document.getElementById("imgFilesInput");
+const imgList = document.getElementById("imgList");
+const img2pdfStatus = document.getElementById("img2pdfStatus");
+const imgBackBtn = document.getElementById("imgBackBtn");
+const imgNextBtn = document.getElementById("imgNextBtn");
+const img2pdfBtn = document.getElementById("img2pdfBtn");
+let queuedImages = [];
+let imgStep = 1;
+
+function goImgStep(step) {
+  imgStep = step;
+  setWizardStep("img2pdf", imgStep, queuedImages.length > 0 ? 2 : 1);
+  imgBackBtn.disabled = imgStep === 1;
+  imgNextBtn.style.display = imgStep === 1 ? "inline-flex" : "none";
+  imgNextBtn.disabled = queuedImages.length === 0;
+  img2pdfBtn.style.display = imgStep === 2 ? "inline-flex" : "none";
+  img2pdfStatus.textContent = imgStep === 1
+    ? "Step 1 of 2 · Select photos or slide images"
+    : `Step 2 of 2 · ${queuedImages.length} image(s) ready`;
+}
+
+document.querySelectorAll("#img2pdfTool .step-pill").forEach(p => {
+  p.onclick = () => goImgStep(Number(p.dataset.step));
+});
+imgBackBtn.onclick = () => goImgStep(1);
+imgNextBtn.onclick = () => { if (queuedImages.length > 0) goImgStep(2); };
+
+function renderImgQueue() {
+  document.getElementById("imgFilesInfo").textContent = queuedImages.length
+    ? `${queuedImages.length} image(s) queued`
+    : "No images selected yet";
+  imgList.innerHTML = "";
+  queuedImages.forEach((file, index) => {
+    const item = document.createElement("div");
+    item.className = "merge-item";
+    item.innerHTML = `
+      <div class="lecture-number">${index + 1}</div>
+      <div class="merge-file-name">
+        <b>${escapeHtml(file.name)}</b>
+        <small>${formatFileSize(file.size)}</small>
+      </div>
+      <div class="merge-actions">
+        <button type="button" data-act="up" ${index === 0 ? "disabled" : ""}>↑</button>
+        <button type="button" data-act="down" ${index === queuedImages.length - 1 ? "disabled" : ""}>↓</button>
+        <button type="button" data-act="rm" class="remove">×</button>
+      </div>`;
+    item.querySelectorAll("button").forEach(b => {
+      b.onclick = () => {
+        const act = b.dataset.act;
+        if (act === "up" && index > 0) [queuedImages[index - 1], queuedImages[index]] = [queuedImages[index], queuedImages[index - 1]];
+        if (act === "down" && index < queuedImages.length - 1) [queuedImages[index + 1], queuedImages[index]] = [queuedImages[index], queuedImages[index + 1]];
+        if (act === "rm") queuedImages.splice(index, 1);
+        renderImgQueue();
+        if (!queuedImages.length) goImgStep(1);
+      };
+    });
+    imgList.appendChild(item);
+  });
+}
+
+imgFilesInput.addEventListener("change", () => {
+  queuedImages.push(...imgFilesInput.files);
+  imgFilesInput.value = "";
+  renderImgQueue();
+  if (queuedImages.length > 0) goImgStep(2);
+});
+
+document.getElementById("clearImgsBtn").onclick = () => {
+  queuedImages = [];
+  renderImgQueue();
+  goImgStep(1);
+};
+
+img2pdfBtn.onclick = async () => {
+  if (!queuedImages.length) return;
+  img2pdfBtn.disabled = true;
+  img2pdfStatus.textContent = "Converting images to PDF…";
+
+  const mode = document.querySelector('input[name="img_mode"]:checked').value;
+  const pageSize = document.querySelector('input[name="img_page_size"]:checked').value;
+  const totalBytes = queuedImages.reduce((a, f) => a + f.size, 0);
+
+  try {
+    let blob;
+    if (backendAvailable && totalBytes <= VERCEL_SAFE_BYTES) {
+      const fd = new FormData();
+      queuedImages.forEach(f => fd.append("images", f));
+      fd.append("mode", mode);
+      fd.append("page_size", pageSize);
+      const r = await fetch("/images-to-pdf", { method: "POST", body: fd });
+      if (!r.ok) throw new Error("Conversion failed");
+      blob = await r.blob();
+    } else {
+      const { PDFDocument } = window.PDFLib;
+      const outPdf = await PDFDocument.create();
+      outPdf.setAuthor("Avadhesh Pingoriya");
+      for (const imgFile of queuedImages) {
+        const bitmap = await createImageBitmap(imgFile);
+        const canvas = document.createElement("canvas");
+        canvas.width = bitmap.width;
+        canvas.height = bitmap.height;
+        canvas.getContext("2d").drawImage(bitmap, 0, 0);
+        processCanvasInPlace(canvas, mode, 55);
+        const jpgUrl = canvas.toDataURL("image/jpeg", 0.88);
+        const embedded = await outPdf.embedJpg(jpgUrl);
+
+        if (pageSize === "fit") {
+          const p = outPdf.addPage([canvas.width, canvas.height]);
+          p.drawImage(embedded, { x: 0, y: 0, width: canvas.width, height: canvas.height });
+        } else {
+          const [W, H] = pageSize === "a4_landscape" ? [842, 595] : [595, 842];
+          const margin = 18;
+          const p = outPdf.addPage([W, H]);
+          const cw = W - 2 * margin, ch = H - 2 * margin;
+          const scale = Math.min(cw / canvas.width, ch / canvas.height);
+          const dw = canvas.width * scale, dh = canvas.height * scale;
+          p.drawImage(embedded, {
+            x: margin + (cw - dw) / 2,
+            y: margin + (ch - dh) / 2,
+            width: dw,
+            height: dh
+          });
+        }
+      }
+      blob = new Blob([await outPdf.save()], { type: "application/pdf" });
+    }
+    downloadBlob(blob, "Concentric_Images_Notes.pdf");
+    img2pdfStatus.textContent = "Done! Images PDF downloaded.";
+  } catch (err) {
+    img2pdfStatus.textContent = "Error: " + err.message;
+  } finally {
+    img2pdfBtn.disabled = false;
+  }
+};
+
+// ==================== TOOL 6: PDF TO IMAGES (2-STEP WIZARD) ====================
+const p2iInput = document.getElementById("p2iInput");
+const p2iThumbs = document.getElementById("p2iThumbs");
+const p2iStatus = document.getElementById("p2iStatus");
+const p2iBackBtn = document.getElementById("p2iBackBtn");
+const p2iNextBtn = document.getElementById("p2iNextBtn");
+const p2iRunBtn = document.getElementById("p2iRunBtn");
+let p2iSelected = new Set();
+let p2iTotal = 0;
+let p2iStep = 1;
+
+function goP2iStep(step) {
+  p2iStep = step;
+  setWizardStep("pdf2img", p2iStep, p2iTotal > 0 ? 2 : 1);
+  p2iBackBtn.disabled = p2iStep === 1;
+  p2iNextBtn.style.display = p2iStep === 1 ? "inline-flex" : "none";
+  p2iNextBtn.disabled = p2iTotal === 0;
+  p2iRunBtn.style.display = p2iStep === 2 ? "inline-flex" : "none";
+  p2iStatus.textContent = p2iStep === 1
+    ? "Step 1 of 2 · Upload a PDF to export slides as images"
+    : `Step 2 of 2 · ${p2iSelected.size} of ${p2iTotal} slides selected`;
+}
+
+document.querySelectorAll("#pdf2imgTool .step-pill").forEach(p => {
+  p.onclick = () => goP2iStep(Number(p.dataset.step));
+});
+p2iBackBtn.onclick = () => goP2iStep(1);
+p2iNextBtn.onclick = () => { if (p2iTotal > 0) goP2iStep(2); };
+
+function updateP2iUI() {
+  p2iThumbs.querySelectorAll(".thumb").forEach(el => {
+    const p = Number(el.dataset.page);
+    const active = p2iSelected.has(p);
+    el.classList.toggle("active", active);
+    el.querySelector(".check").textContent = active ? "✓" : "";
+  });
+  if (p2iStep === 2) {
+    p2iStatus.textContent = `Step 2 of 2 · ${p2iSelected.size} of ${p2iTotal} slides selected`;
+  }
+}
+
+p2iInput.addEventListener("change", async () => {
+  const file = p2iInput.files[0];
+  if (!file) return;
+  document.getElementById("p2iFileInfo").textContent = `Loading ${file.name}…`;
+  p2iThumbs.innerHTML = "";
+  p2iSelected.clear();
+  try {
+    const d = await getPreviewData(file);
+    p2iTotal = d.pages;
+    d.thumbs.forEach(t => {
+      p2iSelected.add(t.page);
+      const el = document.createElement("div");
+      el.className = "thumb active";
+      el.dataset.page = t.page;
+      el.innerHTML = `<div class="check">✓</div><img src="${t.image}" alt="Slide ${t.page}"><div class="num">Slide ${t.page}</div>`;
+      el.onclick = () => {
+        p2iSelected.has(t.page) ? p2iSelected.delete(t.page) : p2iSelected.add(t.page);
+        updateP2iUI();
+      };
+      p2iThumbs.appendChild(el);
+    });
+    document.getElementById("p2iFileInfo").textContent = `${file.name} (${p2iTotal} slides)`;
+    updateP2iUI();
+    goP2iStep(2);
+  } catch (err) {
+    p2iStatus.textContent = "Error: " + err.message;
+  }
+});
+
+document.getElementById("p2iAllBtn").onclick = () => {
+  for (let i = 1; i <= p2iTotal; i++) p2iSelected.add(i);
+  updateP2iUI();
+};
+document.getElementById("p2iClearBtn").onclick = () => {
+  p2iSelected.clear();
+  updateP2iUI();
+};
+
+p2iRunBtn.onclick = async () => {
+  const file = p2iInput.files[0];
+  if (!file || !p2iSelected.size) return;
+  p2iRunBtn.disabled = true;
+  p2iStatus.textContent = "Rendering high-res slide images into ZIP…";
+  const fmt = document.querySelector('input[name="p2i_format"]:checked').value;
+  const pagesList = [...p2iSelected].sort((a, b) => a - b);
+
+  try {
+    let zipBlob;
+    if (backendAvailable && file.size <= VERCEL_SAFE_BYTES) {
+      const fd = new FormData();
+      fd.append("pdf", file);
+      fd.append("pages", pagesList.join(","));
+      fd.append("format", fmt);
+      const r = await fetch("/pdf-to-images", { method: "POST", body: fd });
+      if (!r.ok) throw new Error("Failed to export images");
+      zipBlob = await r.blob();
+    } else {
+      const zip = new window.JSZip();
+      const pdfDoc = await window.pdfjsLib.getDocument({ data: await file.arrayBuffer() }).promise;
+      for (const pNum of pagesList) {
+        const page = await pdfDoc.getPage(pNum);
+        const vp = page.getViewport({ scale: 2.0 });
+        const canvas = document.createElement("canvas");
+        canvas.width = Math.floor(vp.width);
+        canvas.height = Math.floor(vp.height);
+        await page.render({ canvasContext: canvas.getContext("2d"), viewport: vp }).promise;
+        const mime = fmt === "jpg" ? "image/jpeg" : "image/png";
+        const dataUrl = canvas.toDataURL(mime, 0.9);
+        const base64Data = dataUrl.split(",")[1];
+        zip.file(`Slide_${String(pNum).padStart(3, "0")}.${fmt}`, base64Data, { base64: true });
+      }
+      zipBlob = await zip.generateAsync({ type: "blob" });
+    }
+    downloadBlob(zipBlob, "Concentric_Slides_Images.zip");
+    p2iStatus.textContent = "Done! ZIP archive downloaded.";
+  } catch (err) {
+    p2iStatus.textContent = "Error: " + err.message;
+  } finally {
+    p2iRunBtn.disabled = false;
+  }
+};
+
+  </script>
+</body>
+</html>
